@@ -1,0 +1,42 @@
+---
+title: "Require Manual Approval for Production Deploys"
+slug: "github-actions-production-gate"
+description: "Prevent accidental production deployments by adding an environment gate with required reviewers in GitHub Actions."
+category: "Security"
+tags: ["github-actions", "deploy", "production", "environments", "approval"]
+date: "2026-05-21"
+files: [".github/workflows/deploy.yml"]
+secrets: []
+repoExample: "actions/deploy-pages"
+repoUrl: "https://github.com/actions/deploy-pages"
+sources:
+  - title: "GitHub action Manual approval process"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/64593034/github-action-manual-approval-process"
+    votes: 16
+  - title: "Approve Workflow [Manual]"
+    type: github
+    repo: "pavlospt/manual-approval"
+    url: "https://github.com/marketplace/actions/approve-workflow-manual"
+    stars: 3
+  - title: "Manual Approval in GitHub Actions"
+    type: devto
+    author: "Clyde D'Souza"
+    url: "https://blog.clydedsouza.net/posts/manual-approval-in-github-actions"
+    reactions: 25
+---
+
+**Context:** A force-push, bot commit, or merge side-effect triggers an unintended production deploy because the workflow deploys on every push to `main` without any protection.
+
+**Goal:** Add a GitHub Actions environment gate with required reviewers so every production deploy pauses for human approval.
+
+**Requirements:**
+1. Explain GitHub Environments and their protection rules (required reviewers, wait timer, branch restrictions).
+2. Add an `environment: production` field to the deploy job with the `needs:` dependency on build/test jobs.
+3. Walk through creating the "production" environment in GitHub Settings → Environments → Environment protection rules.
+4. Configure "Required reviewers" (1 or more people/teams) in the environment settings.
+5. Show how to pass environment-level secrets and URL to the deploy step.
+6. Cover the auto-approve case for trusted CI — use a deployment branch policy instead.
+7. Include a fallback for orgs without Environments feature: use `github-script` action to post a check-run and wait for external approval.
+
+**Output:** Provide a deployment workflow with an environment gate and the setup instructions for the GitHub environment configuration.

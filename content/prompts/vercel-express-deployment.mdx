@@ -1,0 +1,42 @@
+---
+title: "Deploy Express.js Backend on Vercel"
+slug: "vercel-express-deployment"
+description: "Configure vercel.json, serverless entry points, and routing to deploy an Express.js (or Fastify/Koa) backend on Vercel without 404s."
+category: "Deployment"
+tags: ["vercel", "express", "backend", "serverless", "api"]
+date: "2026-05-21"
+files: ["api/index.js", "vercel.json"]
+secrets: []
+repoExample: "vercel/examples"
+repoUrl: "https://github.com/vercel/examples"
+sources:
+  - title: "How to deploy ExpressJS Node-application to Vercel. Getting 404: NOT_FOUND error"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/76576788/how-to-deploy-expressjs-node-application-to-vercel-getting-404-not-found-error"
+    votes: 20
+  - title: "Vercel Preview/Production Deployment workflow"
+    type: github
+    url: "https://github.com/vercel/examples/blob/main/ci-cd/github-actions/.github/workflows/preview.yaml"
+    repo: "vercel/examples"
+    stars: 5100
+  - title: "Deploying a Node.js + Express Server to Vercel Using the CLI"
+    type: devto
+    url: "https://dev.to/anikdebnath/deploying-a-nodejs-express-server-to-vercel-using-the-cli-2g0e"
+    author: "Anik Deb Nath"
+    reactions: 6
+---
+
+**Context:** Deploying an Express.js backend to Vercel results in 404 on every route — even `/`. The build succeeds but nothing responds.
+
+**Goal:** Configure the Express app as a Vercel serverless function with correct routing, including static file serving for SPAs if the frontend shares the same domain.
+
+**Requirements:**
+1. Export the Express app as a serverless function handler (required for Vercel).
+2. Configure `vercel.json` with the correct `@vercel/node` build and `rewrites` to route API calls to the serverless function.
+3. Serve API routes under `/api/*` and forward all other requests to index.html for a combined SPA + API setup.
+4. Handle CORS headers properly in the serverless context.
+5. Cover environment variables, especially database URLs and API keys that must be set in the Vercel Dashboard.
+6. Note the limitations: 10s timeout on Hobby plan, cold starts, no persistent WebSocket connections.
+7. Include an alternative using `@vercel/node` with a single entry point file.
+
+**Output:** Provide the complete `api/index.js` entry point (with Express app export), `vercel.json` config, and notes on Vercel-specific limitations.

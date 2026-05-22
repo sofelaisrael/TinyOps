@@ -1,0 +1,45 @@
+---
+title: "Deploy Cron Jobs on Railway"
+slug: "railway-cron-jobs"
+description: "Set up scheduled background tasks on Railway using their cron service — including private networking, logging, and health checks."
+category: "Deployment"
+tags: ["railway", "cron", "scheduler", "background"]
+date: "2026-05-22"
+files: ["railway.json", "index.js"]
+secrets: ["CRON_SECRET"]
+repoExample: "railwayapp/starters"
+repoUrl: "https://github.com/railwayapp/starters"
+sources:
+  - title: "Cron Jobs on Railway"
+    type: devto
+    author: "Railway Blog"
+    url: "https://blog.railway.com/p/cron-jobs"
+    reactions: 60
+  - title: "Choose Between Cron Jobs, Background Workers, and Queues"
+    type: devto
+    author: "Railway Docs"
+    url: "https://docs.railway.com/guides/cron-workers-queues"
+    reactions: 15
+  - title: "brody192/railway-cron"
+    type: github
+    repo: "brody192/railway-cron"
+    url: "https://github.com/brody192/railway-cron"
+    stars: 8
+---
+
+**Context:** You have tasks that need to run on a schedule — database cleanup, API polling, report generation. Railway supports deploying a cron service with standard cron syntax.
+
+**Goal:** Deploy a cron job service on Railway that runs a script on a schedule, connects to other Railway services via private networking, logs output, and exposes a health-check endpoint.
+
+**Requirements:**
+1. Create a `railway.json` with the `cron` plugin and a schedule (e.g., `*/15 * * * *` for every 15 minutes).
+2. Write a Node.js script that performs the scheduled task and connects to other Railway services using the private `RAILWAY_PRIVATE_DOMAIN` or `RAILWAY_TCP_PROXY_DOMAIN` environment variables.
+3. Include a simple HTTP health-check endpoint (Express or raw `http`) that returns `{"ok": true}` so Railway knows the service is alive.
+4. Add structured logging: use `console.log` with ISO timestamps so Railway's log viewer is useful.
+5. Handle errors gracefully: wrap the task in try/catch, log the error, and exit non-zero so Railway retries.
+6. Show how to pass secrets (API keys, database URLs) via Railway's environment variable dashboard.
+7. Cover the idle timeout: cron services spin down between runs — the first run after idle may be slightly delayed.
+8. Provide a dry-run mode via environment variable (`DRY_RUN=true`) for testing without side effects.
+9. Include a health-check endpoint that returns the last run timestamp and status.
+
+**Output:** Provide a `railway.json` cron config and a Node.js script template with health checks, logging, and error handling.

@@ -1,0 +1,43 @@
+---
+title: "Fix vercel --prod Upload Stalling or Timing Out"
+slug: "vercel-cli-upload-stall"
+description: "Resolve CLI upload hangs by adding a .vercelignore file to exclude node_modules, .next, and other build artifacts from the upload payload."
+category: "Deployment"
+tags: ["vercel", "cli", "upload", "timeout", "deployment"]
+date: "2026-05-21"
+files: [".vercelignore", "vercel.json"]
+secrets: []
+repoExample: "vercel/vercel"
+repoUrl: "https://github.com/vercel/vercel"
+sources:
+  - title: "Vercel CLI upload stuck? Here's how to fix it"
+    type: devto
+    url: "https://community.vercel.com/t/optimizing-vercel-deployment-size-and-performance-for-faster-loading/34306"
+    author: "Vercel Community"
+    reactions: 20
+  - title: "Deploy your application on Vercel with GitHub Actions"
+    type: devto
+    url: "https://dev.to/octolab/deploy-your-application-on-vercel-with-github-actions-1lh2"
+    author: "OctoLab Team"
+    reactions: 25
+  - title: "Vercel Build Failed — Common Errors and How to Fix Them"
+    type: devto
+    url: "https://www.aimadetools.com/blog/vercel-build-failed-fix/"
+    author: "Aimade Tools"
+    reactions: 15
+---
+
+**Context:** Running `vercel --prod` from the CLI uploads ~357MB and eventually stalls or times out. The root cause is no `.vercelignore` file, so the CLI bundles `node_modules`, `.next`, and `.cache` along with the source code.
+
+**Goal:** Create a `.vercelignore` file that excludes build artifacts and reduces the upload to <40MB, preventing stalls on the CLI upload step.
+
+**Requirements:**
+1. Explain what `vercel --prod` uploads and why `node_modules` is the main culprit.
+2. Create a `.vercelignore` file with the standard exclusion patterns: `node_modules`, `.next`, `.cache`, `.git`, `dist`, `build`.
+3. Show how to check the upload size with `du -sh` before and after adding `.vercelignore`.
+4. Cover the difference between `.vercelignore` and `.gitignore` — they are independent.
+5. For monorepos: exclude sibling package `node_modules` that are not part of the deployment.
+6. Include a CI check that warns if the project lacks a `.vercelignore` file.
+7. Note that Vercel's git integration automatically applies `.vercelignore`, but CLI deployments do not — so this is primarily a CLI fix.
+
+**Output:** Provide a `.vercelignore` template and a CI check that validates its presence.

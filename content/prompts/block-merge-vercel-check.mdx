@@ -1,0 +1,39 @@
+---
+title: "Block PR Merge on Vercel Check Failure"
+slug: "block-merge-vercel-check"
+description: "Ensure that Vercel's internal checks (like Build or Core Web Vitals) must pass before GitHub allows a PR to be merged."
+category: "Testing"
+tags: ["vercel-checks", "github-protection", "quality"]
+date: "2026-05-03"
+files: []
+secrets: ["VERCEL_TOKEN"]
+repoExample: "Dub.co"
+repoUrl: "https://github.com/steven-tey/dub"
+sources:
+  - title: "Merging is blocked - Missing successful active Preview deployment"
+    type: devto
+    url: "https://community.vercel.com/t/merging-is-blocked-missing-successful-active-preview-deployment/424"
+    author: "Vercel Community"
+    reactions: 35
+  - title: "About protected branches - GitHub Docs"
+    type: devto
+    url: "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches"
+    author: "GitHub Docs"
+    reactions: 60
+  - title: "Troubleshooting required status checks - GitHub Docs"
+    type: devto
+    url: "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks"
+    author: "GitHub Docs"
+    reactions: 40
+---
+
+**Context:** Sometimes Vercel's build fails, but GitHub doesn't block the merge because the separate GitHub Action tests passed. We want Vercel's own status to be a "Required" check.
+
+**Goal:** Configure the GitHub Repository and Vercel project to synchronize status checks so GitHub's branch protection rules can block merges if Vercel is unhappy.
+
+**Requirements:**
+1. Enable the Vercel GitHub Integration.
+2. Identify the specific check names Vercel reports to GitHub (e.g., `Vercel`, `Preview`).
+3. Set up a GitHub Action that waits/polls for these checks if they aren't appearing instantly.
+
+**Output:** Provide the step-by-step configuration for GitHub Branch Protection and any glue Action needed.

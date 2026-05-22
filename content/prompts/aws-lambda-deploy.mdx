@@ -1,0 +1,43 @@
+---
+title: "Deploy a Lambda Function from GitHub Actions"
+slug: "aws-lambda-deploy"
+description: "Automate AWS Lambda deployments from GitHub Actions — zip, upload, update function code, and manage environment variables across stages."
+category: "Deployment"
+tags: ["aws", "lambda", "serverless", "github-actions", "deployment"]
+date: "2026-05-22"
+files: [".github/workflows/deploy-lambda.yml"]
+secrets: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION"]
+repoExample: "aws/aws-lambda-dotnet"
+repoUrl: "https://github.com/aws/aws-lambda-dotnet"
+sources:
+  - title: "How to use a GitHub repository in AWS Lambda"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/77369762/how-to-use-a-github-repository-in-aws-lambda"
+    votes: 2
+  - title: "aws-actions/aws-lambda-deploy — official AWS Lambda deploy action"
+    type: github
+    url: "https://github.com/aws-actions/aws-lambda-deploy"
+    repo: "aws-actions/aws-lambda-deploy"
+    stars: 262
+  - title: "Simplify AWS Lambda Deployments Using GitHub Actions"
+    type: devto
+    url: "https://dev.to/aws-builders/simplify-aws-lambda-deployments-using-github-actions-43om"
+    author: "Kasun de Silva"
+---
+
+**Context:** You have a Node.js or Python Lambda function that you manually zip and upload via the AWS Console. Every deployment is error-prone and unrepeatable.
+
+**Goal:** Create a GitHub Actions workflow that zips the Lambda code, uploads it to S3 (optional), updates the Lambda function code, and configures environment variables — with separate dev/prod stages.
+
+**Requirements:**
+1. Install AWS CLI in the workflow runner and configure credentials from repository secrets.
+2. Zip the function code with dependencies (exclude dev dependencies for Node.js, use a virtualenv for Python).
+3. Upload the zip to S3 for versioning (optional but recommended).
+4. Update the Lambda function code using `aws lambda update-function-code --function-name my-func --zip-file fileb://function.zip`.
+5. After code update, run `aws lambda update-function-configuration` to set environment variables from GitHub secrets (mapped to Lambda env vars).
+6. Support multiple deployment environments (dev/staging/prod) using different Lambda function names or aliases.
+7. Add a test step that invokes the Lambda with a sample event and checks the response.
+8. Use `aws lambda publish-version` to create versioned releases for rollback capability.
+9. Cover IAM permissions: the CI role needs `lambda:UpdateFunctionCode`, `lambda:UpdateFunctionConfiguration`, `lambda:PublishVersion`, and `s3:PutObject`.
+
+**Output:** Provide a reusable GitHub Actions workflow for Lambda deployment with environment separation and versioning.

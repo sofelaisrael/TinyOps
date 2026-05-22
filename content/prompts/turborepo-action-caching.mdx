@@ -1,0 +1,36 @@
+---
+title: "Optimize Turborepo Caching in Actions"
+slug: "turborepo-action-caching"
+description: "Cut your GitHub Actions build minutes in half by properly caching Turborepo and pnpm."
+category: "Cost Optimization"
+tags: ["turborepo", "monorepo", "caching"]
+date: "2026-04-25"
+files: ["turbo.json", ".github/workflows/ci.yml"]
+secrets: ["TURBO_TOKEN", "TURBO_TEAM"]
+repoExample: "vercel/turborepo"
+repoUrl: "https://github.com/vercel/turbo/blob/main/.github/workflows/ci.yml"
+sources:
+  - title: "Clear cache in GitHub Actions"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/63521430/clear-cache-in-github-actions"
+    votes: 159
+  - title: "caching-for-turbo — Turborepo remote caching via GitHub Actions"
+    type: github
+    url: "https://github.com/rharkor/caching-for-turbo"
+    repo: "rharkor/caching-for-turbo"
+    stars: 201
+  - title: "Supercharging GitHub Actions CI with Turbo Caching"
+    type: devto
+    url: "https://dev.to/abhilashlr/supercharging-github-actions-ci-from-slow-to-lightning-fast-with-turbo-caching-1bed"
+    author: "abhilashlr"
+    reactions: 2
+---
+
+**Context:** I have a large monorepo managed by Turborepo using `pnpm`. It contains multiple Next.js apps and React packages.
+**Goal:** Create a reusable GitHub Action snippet for caching that I can drop into any of my workflows.
+**Requirements:**
+1. Cache `pnpm` dependencies globally using `actions/setup-node`.
+2. Implement Turborepo caching (`.turbo` folders) using `actions/cache@v4`.
+3. The cache key must be dynamic, incorporating the OS, node version, and a hash of the `pnpm-lock.yaml` file.
+4. Explain how to configure `turbo.json` to ensure GitHub Actions outputs are properly stored and restored.
+**Output:** Provide the YAML snippet for the caching steps and the necessary `turbo.json` configurations.

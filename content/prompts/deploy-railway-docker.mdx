@@ -1,0 +1,29 @@
+---
+title: "Deploy Dockerized App to Railway"
+slug: "deploy-railway-docker"
+description: "Streamline your Docker deployments to Railway using the Railway CLI in GitHub Actions."
+category: "Deployment"
+tags: ["railway", "docker", "paas"]
+date: "2026-05-11"
+files: ["Dockerfile", ".github/workflows/railway.yml"]
+secrets: ["RAILWAY_TOKEN"]
+repoExample: "Railway Templates"
+repoUrl: "https://github.com/railwayapp/templates"
+sources:
+  - title: "Railway CLI"
+    type: github
+    url: "https://github.com/railwayapp/cli"
+    repo: "railwayapp/cli"
+    stars: 547
+---
+
+**Context:** We use Railway for its simplicity but want to manage our own Dockerfiles for custom environments.
+
+**Goal:** Create a GitHub Action that builds the Docker image and pushes it to Railway using their CLI.
+
+**Requirements:**
+1. Install Railway CLI.
+2. Link to a Railway project via a token.
+3. Use `railway up` for the deployment.
+
+**Output:** Provide the GitHub Action workflow.

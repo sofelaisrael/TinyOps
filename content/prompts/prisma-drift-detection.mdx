@@ -1,0 +1,38 @@
+---
+title: "Database Drift Detection with Prisma"
+slug: "prisma-drift-detection"
+description: "Prevent accidental schema changes by checking for database drift before any deployment."
+category: "Database"
+tags: ["prisma", "postgres", "drift"]
+date: "2026-04-28"
+files: [".github/workflows/ci.yml"]
+secrets: ["DATABASE_URL"]
+repoExample: "Cal.com"
+repoUrl: "https://github.com/calcom/cal.com"
+sources:
+  - title: "How to detect on CI if there is Prisma schema change but I forgot to create a migration file?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/72999362/how-to-detect-on-ci-if-there-is-prisma-schema-change-but-i-forgot-to-create-a-mi"
+    votes: 3
+  - title: "Prisma Migration Drift: The Silent Schema Killer (and How to Stop It)"
+    type: devto
+    author: "Sivasaravanan"
+    url: "https://medium.com/@sivasaravanan101004/prisma-migration-drift-the-silent-schema-killer-and-how-to-stop-it-076a5d756b1a"
+    reactions: 15
+  - title: "Schema Diffing & Migration Generation - Prisma Engines"
+    type: github
+    repo: "prisma/prisma-engines"
+    url: "https://mintlify.com/prisma/prisma-engines/schema-engine/diffing"
+    stars: 0
+---
+
+**Context:** We use Prisma and want to ensure our production database schema hasn't drifted from our migration history before we attempt to deploy new code.
+
+**Goal:** Create a CI step that runs `prisma migrate diff` or `prisma migrate status` to detect if the database schema is out of sync with the migrations folder.
+
+**Requirements:**
+1. Spin up a temporary "shadow" database or use the production preview.
+2. Fail the CI pipeline if drift is detected.
+3. Provide instructions on how the developer should resolve the drift.
+
+**Output:** Provide the GitHub Action step and the Prisma command to use for detection.

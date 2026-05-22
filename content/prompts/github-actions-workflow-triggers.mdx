@@ -1,0 +1,41 @@
+---
+title: "Debug GitHub Actions Workflow Triggers"
+slug: "github-actions-workflow-triggers"
+description: "Fix workflows that silently fail to trigger — wrong directory, branch filter mismatch, schedule throttling, and pull_request vs pull_request_target confusion."
+category: "Testing"
+tags: ["github-actions", "triggers", "debugging", "scheduling"]
+date: "2026-05-21"
+files: [".github/workflows/trigger-debug.yml"]
+secrets: []
+repoExample: "actions/checkout"
+repoUrl: "https://github.com/actions/checkout"
+sources:
+  - title: "Manual workflow triggers in GitHub Actions"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/58933155/manual-workflow-triggers-in-github-actions"
+    votes: 53
+  - title: "actions/starter-workflows — canonical trigger examples"
+    type: github
+    url: "https://github.com/actions/starter-workflows"
+    repo: "actions/starter-workflows"
+    stars: 11600
+  - title: "Workflow Triggering Events and Event Actions"
+    type: devto
+    url: "https://dev.to/kalkwst/workflow-triggering-events-and-event-actions-5cec"
+    author: "Kostas Kalafatis"
+---
+
+**Context:** A GitHub Actions workflow exists in the repo but never runs. No error, no failed run — just silence. The file is valid YAML, the actions exist, but nothing triggers.
+
+**Goal:** Diagnose and fix all silent trigger failures by verifying the workflow file location, event configuration, branch filters, permission scopes, and schedule queue behavior.
+
+**Requirements:**
+1. Verify the workflow file is in the correct directory: `.github/workflows/` (plural) at the repository root — anywhere else is ignored.
+2. Confirm the workflow is on the default branch (main/master) — GitHub only reads workflow files from the default branch.
+3. Check branch filters: `branches:` must match exactly — `main` ≠ `Main` ≠ `master`. Use glob patterns for flexibility.
+4. Distinguish `pull_request` from `pull_request_target` — `pull_request` won't run on fork PRs (security restriction).
+5. Handle `schedule` trigger throttling: GitHub delays scheduled events during high load. Avoid `:00` times, add retry crons.
+6. Include a trigger-debug workflow that logs the event type, branch, and actor to confirm the trigger fired.
+7. Add repository permission check: Settings → Actions → General → Workflow permissions must allow the required access level.
+
+**Output:** Provide a trigger-debug workflow file, a trigger troubleshooting checklist, and correct event configuration templates for push, pull_request, schedule, and workflow_dispatch.

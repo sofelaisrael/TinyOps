@@ -1,0 +1,37 @@
+---
+title: "Auto-Assign PR Reviewers Based on Files"
+slug: "auto-assign-reviewers"
+description: "Automatically ping the right people for a code review based on which parts of the codebase were modified."
+category: "Advanced CI/CD"
+tags: ["reviewers", "github-api", "automation"]
+date: "2026-05-08"
+files: [".github/CODEOWNERS", ".github/workflows/assign.yml"]
+secrets: ["GH_PAT"]
+repoExample: "Next.js"
+repoUrl: "https://github.com/vercel/next.js"
+sources:
+  - title: "Auto Assign Action"
+    type: github
+    url: "https://github.com/kentaro-m/auto-assign-action"
+    repo: "kentaro-m/auto-assign-action"
+    stars: 393
+  - title: "How to automatically request a review from someone using GitHub actions?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/66557514/how-to-automatically-request-a-review-from-someone-using-github-actions"
+    votes: 7
+  - title: "Github action to assign reviewers based on labels is not executed when labels are set by another action"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/77984811/github-action-to-assign-reviewers-based-on-labels-is-not-executed-when-labels-ar"
+    votes: 0
+---
+
+**Context:** In a large project, developers often don't know who should review their PR. We want to automate this based on expertise (e.g., if CSS changes, ping the UI team).
+
+**Goal:** Use a combination of a `CODEOWNERS` file and a GitHub Action to automatically assign reviewers.
+
+**Requirements:**
+1. Configure `.github/CODEOWNERS` for directory-level ownership.
+2. Use an Action that respects these owners and adds them as reviewers when a PR is opened.
+3. Handle "round-robin" assignment for larger teams.
+
+**Output:** Provide a sample `CODEOWNERS` file and the Action to trigger assignment.

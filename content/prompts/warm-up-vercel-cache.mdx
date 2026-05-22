@@ -1,0 +1,39 @@
+---
+title: "Warm Up Vercel Cache for Faster Deploys"
+slug: "warm-up-vercel-cache"
+description: "Pre-seed the Vercel/Turborepo cache from GitHub Actions to ensure lightning-fast production deployments."
+category: "Performance"
+tags: ["caching", "turborepo", "build-speed"]
+date: "2026-05-04"
+files: [".github/workflows/ci.yml"]
+secrets: ["TURBO_TOKEN", "TURBO_TEAM"]
+repoExample: "Cal.com"
+repoUrl: "https://github.com/calcom/cal.com"
+sources:
+  - title: "Using Turborepo with GitHub Actions"
+    type: devto
+    url: "https://turborepo.dev/docs/guides/ci-vendors/github-actions"
+    author: "Turborepo Docs"
+    reactions: 35
+  - title: "Add GitHub Actions CI pipeline"
+    type: devto
+    url: "https://vercel.com/academy/production-monorepos/github-actions"
+    author: "Vercel Academy"
+    reactions: 40
+  - title: "vercel/examples - GitHub Actions CI/CD"
+    type: github
+    url: "https://github.com/vercel/examples/tree/main/ci-cd/github-actions"
+    repo: "vercel/examples"
+    stars: 5100
+---
+
+**Context:** We want our final production deploy to Vercel to be as fast as possible. Since we already run builds in CI, we should share that cache with Vercel.
+
+**Goal:** Configure Remote Caching in Turborepo so that the build artifacts generated during GitHub Actions are available to Vercel's build machines.
+
+**Requirements:**
+1. Set up Vercel Remote Caching in the Vercel Dashboard.
+2. Inject `TURBO_TOKEN` and `TURBO_TEAM` into the GitHub Action environment.
+3. Ensure the environment (Node version, OS) matches between GitHub and Vercel.
+
+**Output:** Provide the environment variable setup and the `turbo build` command.

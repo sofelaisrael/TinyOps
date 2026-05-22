@@ -1,0 +1,38 @@
+---
+title: "Multi-Environment Deployments (Staging/Prod)"
+slug: "multi-environment-deploy"
+description: "Configure a robust workflow to deploy to a Staging environment on every merge to 'develop' and Production on 'main'."
+category: "Advanced CI/CD"
+tags: ["staging", "production", "vercel-cli"]
+date: "2026-05-05"
+files: [".github/workflows/deploy.yml"]
+secrets: ["VERCEL_TOKEN", "STAGING_PROJECT_ID", "PROD_PROJECT_ID"]
+repoExample: "T3 Stack"
+repoUrl: "https://github.com/t3-oss/create-t3-app"
+sources:
+  - title: "Use dynamic input value for Environment in GitHub Actions workflow job"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/65826284/use-dynamic-input-value-for-environment-in-github-actions-workflow-job"
+    votes: 5
+  - title: "actions/starter-workflows — multi-environment deploy templates"
+    type: github
+    url: "https://github.com/actions/starter-workflows"
+    repo: "actions/starter-workflows"
+    stars: 11600
+  - title: "How To Use GitHub Actions for Deployments When Following Trunk-Based Development"
+    type: devto
+    url: "https://dev.to/jannikwempe/how-to-use-github-actions-for-deployments-when-following-trunk-based-development-4hmf"
+    author: "Jannik Wempe"
+    reactions: 4
+---
+
+**Context:** We don't just have one production site. We need a stable staging environment that exactly mirrors production for final QA before we release to users.
+
+**Goal:** Write a GitHub Action that uses branch logic to determine which Vercel Project ID to use for the deployment.
+
+**Requirements:**
+1. Use `if: github.ref == 'refs/heads/main'` style conditionals.
+2. Use Vercel CLI with the `--prod` flag for production.
+3. Pass different environment-specific variables (e.g., `STAGING_DB_URL`).
+
+**Output:** Provide the conditional GitHub Action YAML for multi-environment support.

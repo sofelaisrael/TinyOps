@@ -1,0 +1,29 @@
+import { NextResponse } from "next/server";
+import { sendEmail } from "@/lib/email";
+
+export async function POST(req: Request) {
+  try {
+    const { title, description, category, name, email } = await req.json();
+
+    if (!title?.trim()) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    }
+
+    const text = [
+      `Title: ${title}`,
+      `Category: ${category || "None"}`,
+      `Description: ${description || "None"}`,
+      `Submitted by: ${name || "Anonymous"} (${email || "no email"})`,
+    ].join("\n");
+
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL || "sofelaisrael3@gmail.com",
+      subject: `New Prompt Suggestion: ${title}`,
+      text,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

@@ -1,0 +1,42 @@
+---
+title: "Cache Dependencies in GitHub Actions for Faster Builds"
+slug: "github-actions-dependency-caching"
+description: "Configure dependency caching for npm, pip, Docker, and other package managers in GitHub Actions to cut build times by 60-80%."
+category: "Performance"
+tags: ["github-actions", "caching", "build-speed", "npm", "docker"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: []
+repoExample: "vercel/next.js"
+repoUrl: "https://github.com/vercel/next.js"
+sources:
+  - title: "actions/cache - Cache dependencies and build outputs in GitHub Actions"
+    type: github
+    url: "https://github.com/actions/cache"
+    repo: "actions/cache"
+    stars: 5400
+  - title: "Caching dependencies to speed up workflows"
+    type: devto
+    url: "https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows"
+    author: "GitHub Docs"
+    reactions: 60
+  - title: "actions/setup-node"
+    type: github
+    url: "https://github.com/actions/setup-node"
+    repo: "actions/setup-node"
+    stars: 4300
+---
+
+**Context:** GitHub Actions runners are ephemeral — every job starts on a fresh VM with no persisted state. Running `npm install` or `pip install` from scratch on every commit wastes 2-4 minutes per run.
+
+**Goal:** Configure dependency caching for package managers so that subsequent workflow runs skip redundant downloads when the lockfile hasn't changed.
+
+**Requirements:**
+1. Use `actions/cache@v4` or `actions/setup-node` built-in caching for Node.js (npm, pnpm, yarn).
+2. Set up Docker layer caching using GitHub Actions cache backend (`type=gha`).
+3. Include a cache key that auto-invalidates when the lockfile changes via `hashFiles`.
+4. Add a `restore-keys` fallback so partial cache hits still speed up installs.
+5. Handle pip/poetry caching for Python dependencies if applicable.
+6. Output the complete `.github/workflows/ci.yml` with caching integrated into the existing build pipeline.
+
+**Output:** Provide the full YAML workflow file with `actions/cache` steps for each package manager, Docker cache configuration, and notes on cache key strategy.

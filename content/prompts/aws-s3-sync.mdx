@@ -1,0 +1,45 @@
+---
+title: "Sync to S3 with CloudFront Invalidation"
+slug: "aws-s3-sync"
+description: "Deploy a static site or build output to S3 from GitHub Actions, with automatic CloudFront cache invalidation for instant updates."
+category: "Deployment"
+tags: ["aws", "s3", "cloudfront", "static", "github-actions"]
+date: "2026-05-22"
+files: [".github/workflows/deploy-s3.yml"]
+secrets: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "CLOUDFRONT_DISTRIBUTION_ID"]
+repoExample: "aws/aws-cli"
+repoUrl: "https://github.com/aws/aws-cli"
+sources:
+  - title: "AWS S3 Sync with CloudFront Cache invalidation"
+    type: github
+    url: "https://github.com/marketplace/actions/aws-s3-sync-with-cloudfront-cache-invalidation"
+    repo: "kersvers/s3-sync-with-cloudfront-invalidation"
+    stars: 9
+  - title: "Deploy to AWS S3 sync with github"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/66116784/deploy-to-aws-s3-sync-with-github"
+    votes: 3
+  - title: "Deploy a web app to S3 with CloudFront Invalidation via GitHub Actions"
+    type: devto
+    url: "https://blog.jeiman.dev/deploy-a-web-app-to-s3-with-cloudfront-invalidation-via-github-actions"
+    author: "Jeiman Jeya"
+    reactions: 15
+---
+
+**Context:** You build a static site (Vite, Hugo, or plain HTML) and manually upload to S3. CloudFront caches old content for hours because you forget to invalidate the cache.
+
+**Goal:** Create a GitHub Actions workflow that builds the project, syncs the output to S3, and creates a CloudFront invalidation for `/*` — all on push to main.
+
+**Requirements:**
+1. Install AWS CLI and configure credentials from repository secrets.
+2. Build the project (npm run build, hugo, etc.) and output to a known directory.
+3. Sync the build directory to S3 using `aws s3 sync ./dist s3://my-bucket --delete` — the `--delete` flag removes files no longer in the build.
+4. Create a CloudFront invalidation: `aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"`.
+5. Add a preview deployment for pull requests: sync to a `pr-{number}` prefix in the same bucket — with a unique domain or subpath.
+6. Cache the `node_modules` and build artifacts in GHA for faster subsequent runs.
+7. Handle the case where the bucket or distribution doesn't exist yet — fail early with a clear error.
+8. Include IAM policy: the CI role needs `s3:PutObject`, `s3:DeleteObject`, `s3:ListBucket`, and `cloudfront:CreateInvalidation`.
+9. For Next.js static export: note that `next export` output goes to `out/` not `dist/`.
+10. Add a `--no-progress` flag to the sync command for cleaner CI logs.
+
+**Output:** Provide a GitHub Actions workflow for S3 deployment with CloudFront invalidation and optional PR previews.

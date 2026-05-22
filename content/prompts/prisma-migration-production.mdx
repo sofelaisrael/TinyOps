@@ -1,0 +1,40 @@
+---
+title: "Run Prisma Migrations Safely in Production"
+slug: "prisma-migration-production"
+description: "Generate a safe, zero-downtime Prisma migration workflow for production deployments."
+category: "Database"
+tags: ["prisma", "postgres", "migrations", "zero-downtime"]
+date: "2026-05-20"
+files: [".github/workflows/deploy.yml", "scripts/migrate.sh"]
+secrets: ["DATABASE_URL", "DIRECT_URL"]
+repoExample: "Prisma Docs"
+repoUrl: "https://github.com/prisma/prisma-examples"
+sources:
+  - title: "Deploying Prisma to database unaccessible by GitHub Actions"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/76940753/deploying-prisma-to-database-unaccessible-by-github-actions"
+    votes: 10
+  - title: "neondatabase/preview-branches-with-vercel — Prisma + Neon + Vercel previews"
+    type: github
+    url: "https://github.com/neondatabase/preview-branches-with-vercel"
+    repo: "neondatabase/preview-branches-with-vercel"
+    stars: 45
+  - title: "Validate database schema changes in your CI pipeline before deploying to production"
+    type: devto
+    url: "https://dev.to/nicolewhite-ab/validate-database-schema-changes-in-your-ci-pipeline-before-deploying-to-production-1bfh"
+    author: "Nicole White"
+    reactions: 4
+---
+
+**Context:** I need to run Prisma migrations as part of my production CI/CD pipeline, but I want to avoid downtime when applying schema changes.
+
+**Goal:** Create a robust GitHub Actions workflow that applies Prisma migrations safely, with rollback capabilities and proper error handling.
+
+**Requirements:**
+1. Run `prisma migrate deploy` (not `dev`) — only applies pending migrations, never creates new ones.
+2. Use `DIRECT_URL` for migrations if using connection poolers like PgBouncer.
+3. Generate the Prisma client before deploying the application.
+4. Include a pre-flight check (shadow database or `prisma migrate status`) to catch issues early.
+5. Add a rollback plan using `prisma migrate resolve` in case of failure.
+
+**Output:** Provide the complete GitHub Action YAML and a shell script for safe migration execution during deployments.

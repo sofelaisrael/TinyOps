@@ -1,0 +1,42 @@
+---
+title: "Speed Up Docker Builds with Cache in GitHub Actions"
+slug: "github-actions-docker-cache"
+description: "Configure Docker layer caching on ephemeral GitHub Actions runners so builds take seconds instead of minutes."
+category: "Performance"
+tags: ["github-actions", "docker", "cache", "build", "performance"]
+date: "2026-05-21"
+files: [".github/workflows/docker.yml"]
+secrets: []
+repoExample: "docker/build-push-action"
+repoUrl: "https://github.com/docker/build-push-action"
+sources:
+  - title: "Caching pip dependencies in docker builder with github actions"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/71799975/caching-pip-dependencies-in-docker-builder-with-github-actions"
+    votes: 6
+  - title: "How to use `RUN mount=type=cache` within GitHub Actions"
+    type: github
+    repo: "moby/buildkit"
+    url: "https://github.com/moby/buildkit/issues/3011"
+    stars: 9800
+  - title: "Docker Build Cache Worked Locally. Broke in CI Every Time."
+    type: devto
+    author: "Root Cause"
+    url: "https://aws.plainenglish.io/docker-build-cache-worked-locally-broke-in-ci-every-time-c9aa6e7c5f80"
+    reactions: 45
+---
+
+**Context:** Docker builds on GitHub Actions take 15+ minutes because every run starts from scratch — ephemeral runners have no persistent Docker layer cache.
+
+**Goal:** Configure `docker/build-push-action` with GitHub Actions cache (type=gha) so unchanged layers are reused across workflow runs.
+
+**Requirements:**
+1. Explain Docker layer caching and why ephemeral runners lose the cache.
+2. Use `docker/build-push-action@v6` with `cache-from: type=gha` and `cache-to: type=gha,mode=max`.
+3. Show the basic workflow for building and pushing to Docker Hub or GHCR.
+4. Cover the `mode=max` vs `mode=min` trade-off — max caches all layers but is slower to save, min caches only exported layers.
+5. Include a fallback to registry cache (`type=registry`) for teams that want cache shared across runners.
+6. Add cache key scoping by branch and image name to avoid collisions.
+7. Note: the GHA cache has a 10GB limit — purge stale caches periodically.
+
+**Output:** Provide a complete Docker build-and-push workflow with layer caching and a comparison of GHA vs registry cache modes.

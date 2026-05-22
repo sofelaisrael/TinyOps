@@ -1,0 +1,695 @@
+---
+title: "Common GitHub Actions & Vercel Issues"
+slug: "common-issues"
+description: "Real-world issues pulled from Stack Overflow, GitHub Discussions, dev.to, and Reddit — documented with root causes, source links, and solution prompts."
+date: "2026-05-21"
+sources:
+  stackoverflow: 14
+  github: 3
+  devto: 6
+  reddit: 2
+  community: 4
+---
+
+import { Link } from 'next/link';
+
+# Common GitHub Actions & Vercel Issues
+
+This is a living reference of the most frequent problems developers hit with
+**GitHub Actions** and **Vercel**. Every entry is grounded in real community
+sources — Stack Overflow, GitHub Issues, dev.to articles, Reddit threads, and
+Vercel Community posts — not speculation.
+
+Each issue links back to the original source and to any TinyOps prompt that
+solves it.
+
+---
+
+## GitHub Actions
+
+### Permission & Authentication
+
+#### 1. "Resource not accessible by integration" — GITHUB_TOKEN scopes
+
+**Source:** [Stack Overflow — 75995802](https://stackoverflow.com/questions/75995802) · 500+ upvotes  
+**Also:** [Stack Overflow — 79750835](https://stackoverflow.com/questions/79750835) · [BSWEN guide](https://docs.bswen.com/blog/2026-04-13-github-actions-common-mistakes/)
+
+**Symptom:**
+```
+HttpError: Resource not accessible by integration
+remote: Permission to user/repo.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/user/repo/': The requested URL returned error: 403
+```
+
+**Root cause:** By default, `GITHUB_TOKEN` has limited (read-only) scope.
+Operations like pushing tags, creating releases, commenting on PRs, or writing
+to the container registry require explicit write permissions.
+
+**Fix:**
+```yaml
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write   # if pushing to GHCR
+```
+
+**Related prompts:** `block-merge-vercel-check`, `enforce-branch-naming`
+
+---
+
+#### 2. GH PAT failing with SSO-protected enterprise repos
+
+**Source:** [Stack Overflow — 79874764](https://stackoverflow.com/questions/79874764)
+
+**Symptom:** `actions/checkout` returns "Not Found" for a private enterprise
+repo, even though the PAT has `repo` scope and works in the browser.
+
+**Root cause:** The PAT was never authorized for the SSO org. In GitHub
+Settings → Developer settings → PAT, each token must be explicitly
+"Configure SSO" and authorized for each org.
+
+**Fix:** Click "Configure SSO" on the PAT and authorize the organization.
+
+---
+
+#### 3. Cross-repo push fails — GITHUB_TOKEN is repo-scoped
+
+**Source:** [Stack Overflow — 79471500](https://stackoverflow.com/questions/79471500)
+
+**Symptom:**
+```
+remote: Permission to target-org/target-repo.git denied to github-actions[bot].
+```
+
+**Root cause:** `GITHUB_TOKEN` is scoped to the repository running the
+workflow. It cannot push to a different repository, even if both are in the
+same org.
+
+**Fix:** Use a PAT or GitHub App token stored as a secret, then reference it
+explicitly:
+```yaml
+- uses: actions/checkout@v4
+  with:
+    repository: target-org/target-repo
+    token: ${{ secrets.MY_PAT }}
+```
+
+---
+
+### Workflow Triggers
+
+#### 4. Workflow not showing up in Actions tab
+
+**Source:** [BSWEN — common mistakes](https://docs.bswen.com/blog/2026-04-13-github-actions-common-mistakes/) · [StigCloud](https://stigcloud.com/2026/05/01/github-actions-workflow-not-triggering-fix-it-fast/)
+
+**Symptom:** Push code, check the Actions tab — nothing. No workflow runs,
+no errors, no indication anything exists.
+
+**Root cause:** The workflow file is in the wrong directory. GitHub Actions
+only reads files from `.github/workflows/` (plural) at the repository root.
+Common mistakes:
+- `.github/workflow/` (singular)
+- `.workflows/` (wrong parent)
+- Inside a subdirectory
+
+**Fix:** Move the file to `.github/workflows/` and ensure it's on the default
+branch.
+
+---
+
+#### 5. Scheduled workflows not running
+
+**Source:** [Stack Overflow — 79919760](https://stackoverflow.com/questions/79919760)
+
+**Symptom:** `workflow_dispatch` works fine but the `schedule` trigger never
+fires. No "clock icon" appears in the Actions tab.
+
+**Root cause:** GitHub throttles `schedule` events during periods of high
+load (especially at the start of every hour). The docs state: "The schedule
+event can be delayed during periods of high loads. If the load is
+sufficiently high, some queued jobs may be dropped."
+
+**Fix:** Avoid scheduling at peak times (e.g., `:00`). Consider adding a
+retry with staggered times:
+```yaml
+on:
+  schedule:
+    - cron: '22 6 * * *'    # primary
+    - cron: '25 6 * * *'    # fallback
+```
+
+**Related prompts:** No direct match — consider adding a "reliable cron"
+prompt.
+
+---
+
+#### 6. Branch filter silently skipping runs
+
+**Source:** [StigCloud](https://stigcloud.com/2026/05/01/github-actions-workflow-not-triggering-fix-it-fast/)
+
+**Symptom:** Workflow is in the right directory, YAML is valid, but pushes to
+a branch don't trigger it. No error, no run.
+
+**Root cause:** The `branches:` filter doesn't match the branch name. Exact
+match required — `main` ≠ `Main` ≠ `master`. Also common: forgetting that
+workflow files on feature branches don't run until merged to the default
+branch.
+
+**Fix:** Verify the branch name in the filter matches exactly. Use glob
+patterns for flexibility:
+```yaml
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+```
+
+---
+
+### Execution Failures
+
+#### 7. "Process completed with exit code 1" — the useless error
+
+**Source:** [dev.to — debugging guide](https://dev.to/yash_step2dev/how-to-debug-github-actions-failures-without-losing-your-mind-2o5l) · [DevOpsBoys](https://devopsboys.com/blog/cicd-pipeline-debugging-guide-2026)
+
+**Symptom:** A red X with "Process completed with exit code 1." No stack
+trace, no explanation.
+
+**Root cause:** This is the default failure message for any non-zero exit
+code. The actual error is usually 3-4 lines deeper inside the expanded step.
+
+**Fix:** Click on the failed job, expand the individual step, and read the
+actual error output. Enable debug logging:
+```yaml
+env:
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
+```
+
+---
+
+#### 8. "npm ci" fails — missing or corrupt lockfile
+
+**Source:** [BSWEN — debugging](https://docs.bswen.com/blog/2026-04-13-github-actions-debugging/)
+
+**Symptom:** Build fails during dependency installation with `ERR_PNPM_NO_LOCKFILE`
+or `EINTEGRITY`.
+
+**Root cause:** `npm ci` requires an exact `package-lock.json`. If it's
+missing from the repo, out of sync with `package.json`, or corrupted, the
+step fails. Also: committing `node_modules` causes permission conflicts.
+
+**Fix:** Commit the lockfile. Delete and regenerate if corrupted:
+```bash
+rm -rf node_modules package-lock.json
+npm install
+git add package-lock.json
+git commit -m "regenerate lockfile"
+```
+
+---
+
+#### 9. Tests pass locally but fail in CI
+
+**Source:** [DevOpsBoys](https://devopsboys.com/blog/cicd-pipeline-debugging-guide-2026) · [dev.to — Yash](https://dev.to/yash_step2dev/how-to-debug-github-actions-failures-without-losing-your-mind-2o5l)
+
+**Symptom:** The exact same tests pass on a local machine but fail in the CI
+runner.
+
+**Root cause (common):**
+- Missing environment variables — local `.env` has values CI doesn't
+- Port conflicts — multiple jobs on the same shared runner
+- Timezone differences — CI runs in UTC
+- System dependencies — `libssl`, Python, etc. not installed on runner
+- Case-sensitive filesystem — macOS is case-insensitive, Linux runners are
+case-sensitive
+
+**Fix:**
+- Add a debug step to print the environment:
+  ```yaml
+  - run: env | sort
+  - run: node --version && npm --version
+  ```
+- Pin runner version (`ubuntu-22.04` instead of `ubuntu-latest`)
+- Install system deps explicitly
+
+---
+
+#### 10. Checkout freezes on macOS self-hosted runners
+
+**Source:** [Stack Overflow — 79881327](https://stackoverflow.com/questions/79881327)
+
+**Symptom:** `actions/checkout` hangs indefinitely with last log line:
+```
+trace: exec: git-credential-osxkeychain store
+```
+
+**Root cause:** A deadlock in `git-credential-osxkeychain` when multiple
+jobs run checkout concurrently on macOS self-hosted runners.
+
+**Fix:** Clear the workspace before checkout:
+```yaml
+- name: Clear workspace
+  run: |
+    find "$GITHUB_WORKSPACE" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+- uses: actions/checkout@v4
+```
+
+---
+
+### Performance & Cost
+
+#### 11. No dependency caching — slow builds
+
+**Source:** [dev.to — Sonia](https://dev.to/soniarotglam/5-github-actions-mistakes-that-will-slow-down-or-break-your-cicd-pipeline-3o4p) · [mainbranch.dev](https://mainbranch.dev/articles/github-actions-fundamentals/)
+
+**Symptom:** Every build runs `npm install` from scratch, taking 2-4 minutes
+for no benefit.
+
+**Root cause:** GitHub Actions runners are ephemeral — no state persists
+between runs. Without `actions/cache`, you redownload everything every time.
+
+**Fix:**
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    cache: 'npm'
+```
+Or explicitly:
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+```
+
+**Related prompts:** `turborepo-action-caching`, `skip-build-if-no-changes`
+
+---
+
+#### 12. 100 deployments/day limit on free tier
+
+**Source:** [Luca Berton](https://lucaberton.com/blog/vercel-100-deployments-free-tier-limit/) · [Vercel Community](https://community.vercel.com/t/pushes-to-main-deploy-hook-both-silently-fail-jobs-stuck-in-pending-never-reach-build-queue/40472)
+
+**Symptom:** "Resource is limited — try again in 25 minutes" from Vercel.
+Wall of red failed deployments on the dashboard.
+
+**Root cause:** Vercel's Hobby plan limits deployments to 100 per day. Every
+push to every branch (including feature branches) counts as a deployment.
+
+**Fix:** Disable auto-deploy for non-production branches:
+```
+vercel.json → git → ignoredBuildStep
+```
+Or in dashboard: Settings → Git → Ignored Build Step. Also: batch commits
+before pushing, use `vercel dev` for local testing.
+
+**Related prompts:** `cleanup-vercel-previews`, `skip-build-if-no-changes`
+
+---
+
+#### 13. Docker build cache miss — slow container builds
+
+**Source:** [DevOpsBoys](https://devopsboys.com/blog/cicd-pipeline-debugging-guide-2026)
+
+**Symptom:** Docker builds take 15+ minutes even when only one line changed.
+
+**Root cause:** Ephemeral runners have no Docker layer cache. Every build
+starts from scratch.
+
+**Fix:** Use `docker/build-push-action` with cache-from/cache-to:
+```yaml
+- uses: docker/build-push-action@v6
+  with:
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
+```
+
+---
+
+### Production Safety
+
+#### 14. Accidental production deploys
+
+**Source:** [dev.to — Sonia](https://dev.to/soniarotglam/5-github-actions-mistakes-that-will-slow-down-or-break-your-cicd-pipeline-3o4p)
+
+**Symptom:** A force-push, bot commit, or merge side-effect triggers a
+production deploy unintentionally.
+
+**Root cause:** No gating between CI and production deploy. The workflow
+deploys on every push to `main` without protection.
+
+**Fix:** Add an environment gate:
+```yaml
+deploy:
+  needs: build
+  environment: production
+  runs-on: ubuntu-latest
+  steps:
+    - run: echo deploy
+```
+With environment protection rules in GitHub Settings → Environments,
+this requires manual approval.
+
+**Related prompts:** `multi-environment-deploy`, `block-merge-vercel-check`
+
+---
+
+#### 15. Secrets in the wrong environment
+
+**Source:** [dev.to — debugging](https://dev.to/yash_step2dev/how-to-debug-github-actions-failures-without-losing-your-mind-2o5l)
+
+**Symptom:** Workflow fails with auth errors. The secret exists in the
+repository but isn't accessible.
+
+**Root cause:** Secrets are scoped to environments. If the workflow doesn't
+specify the correct `environment:`, or the secret was stored under a
+different environment name, it resolves as undefined.
+
+**Fix:** Verify the environment name in the workflow matches exactly. Check
+if the secret is repo-level or environment-level.
+
+**Related prompts:** `sync-secrets-vercel`, `sync-env-vars`, `rotate-api-keys`
+
+---
+
+## Vercel
+
+### Deployment Failures
+
+#### 16. Build succeeds but "Deploying outputs" fails
+
+**Source:** [Vercel Community — 34782](https://community.vercel.com/t/vercel-deployment-failure-with-internal-error-during-deploying-outputs-phase/34782) · [Vercel Community — 25298](https://community.vercel.com/t/ongoing-incident-elevated-errors-across-multiple-services/25298)
+
+**Symptom:**
+```
+Build completed successfully
+Deploying outputs...
+Error: We encountered an internal error. Please try again.
+```
+
+**Root cause:** Usually a platform-side infrastructure issue. Common
+triggers:
+- Middleware or Edge Functions that deploy globally — if one region (e.g.,
+  Dubai `dxb1`) is unhealthy, the global deploy fails
+- High volume of output files hanging the deploy phase
+
+**Fix:**
+- Check [Vercel Status](https://www.vercel-status.com/) for ongoing incidents
+- If using Middleware, consider if it can be replaced with app-level logic
+- Set a specific region: `"regions": ["iad1"]` in `vercel.json`
+- Remove `vercel.json` and let Vercel auto-detect framework settings
+
+---
+
+#### 17. vercel.json config errors fail silently
+
+**Source:** [dev.to — Henry](https://dev.to/henry_dan_81513dd35a2f540/vercel-stopped-deploying-no-alert-no-error-just-old-code-4od7)
+
+**Symptom:** Pushes go to GitHub, Vercel webhook fires (HTTP 200), but no
+deployment appears in the dashboard. The dashboard keeps showing the old
+deployment. No error notification, no email.
+
+**Root cause:** A `vercel.json` validation error causes the build to be
+discarded before it starts. The webhook fires, validation fails, and Vercel
+silently drops it. Common: specifying both `permanent: true` and
+`statusCode: 301` on the same redirect.
+
+**Fix:** Force-deploy via CLI to surface the error:
+```bash
+vercel --prod
+```
+The CLI shows the validation error immediately. Fix the conflict — remove
+redundant properties:
+```json
+{ "source": "/(.*)", "destination": "https://domain.com/$1", "permanent": true }
+```
+
+---
+
+#### 18. SPA/client-side routing returns 404
+
+**Source:** [Stack Overflow — 79715553](https://stackoverflow.com/questions/79715553) · [Stack Overflow — 78414753](https://stackoverflow.com/questions/78414753)
+
+**Symptom:** Root `/` loads fine but refreshing `/login` or navigating to a
+nested route returns 404.
+
+**Root cause:** Vercel doesn't know about client-side routes. Without a
+rewrite rule, it tries to serve a file at that path, finds nothing, and
+returns 404.
+
+**Fix:** Add a rewrite to `vercel.json`:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+For Vite projects, also ensure the build command and dist directory are
+explicit:
+```json
+{
+  "builds": [{ "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+---
+
+#### 19. Express.js backend returns 404 on all routes
+
+**Source:** [Stack Overflow — 79709489](https://stackoverflow.com/questions/79709489)
+
+**Symptom:** Express.js app deploys successfully but every route (including
+`/`) returns 404. No logs, no errors.
+
+**Root cause:** Wrong `vercel.json` configuration. The route `destination`
+must match the server entry point correctly. Using `rewrites` instead of
+`routes` is the canonical pattern.
+
+**Fix:**
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "api/index.js", "use": "@vercel/node" }],
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+}
+```
+Export the Express app as a serverless function:
+```js
+module.exports = app;
+```
+
+---
+
+#### 20. Dynamic API routes 404/405 in Next.js
+
+**Source:** [Stack Overflow — 79637669](https://stackoverflow.com/questions/79637669)
+
+**Symptom:** Static API routes work (`/api/health`), but dynamic routes
+(`/api/v1/wallet/expenses/[id]`) return 405 with `X-Matched-Path: /404`.
+
+**Root cause:** Multiple `api` directories (root-level and inside `pages/`)
+causing a routing conflict. PWA config from `next-pwa` can also interfere.
+
+**Fix:** Rename any root-level `api/` directory to something else
+(e.g., `api_src/`). Remove or disable `next-pwa` config and verify.
+
+---
+
+### Build Environment
+
+#### 21. Build works locally but fails on Vercel
+
+**Source:** [Stack Overflow — 79369468](https://stackoverflow.com/questions/79369468)
+
+**Symptom:** `npm run build` works locally but Vercel shows "Command 'npm run
+build' exited with 1" with no useful error.
+
+**Root cause:** Custom build scripts that include `npm i` inside the build
+command (e.g., `"build": "npm i && next build"`). Vercel runs `npm install`
+first, then the build command — nested `npm i` causes conflicts.
+
+**Fix:** Use the default build command:
+```json
+"scripts": {
+  "build": "next build"
+}
+```
+Let Vercel handle dependency installation separately.
+
+---
+
+#### 22. Wrong Node.js version
+
+**Source:** [TClaw](https://tclaw.dev/blog/day-7-github-vercel/)
+
+**Symptom:** Vercel build fails with "Unexpected error. Please try again
+later." No build logs, just failure.
+
+**Root cause:** Node 24 set in `vercel.json` or `.nvmrc`, but Vercel doesn't
+support it yet. It fails with a generic error — no helpful message about the
+unsupported version.
+
+**Fix:** Pin to a supported Node version:
+```json
+{
+  "node": "20.x"
+}
+```
+
+---
+
+### Environment & Configuration
+
+#### 23. Deployments stuck in PENDING
+
+**Source:** [Vercel Community — 38381](https://community.vercel.com/t/vercel-deployments-stuck-in-pending-state-across-all-projects/38381) · [Vercel Community — 40472](https://community.vercel.com/t/pushes-to-main-deploy-hook-both-silently-fail-jobs-stuck-in-pending-never-reach-build-queue/40472)
+
+**Symptom:** Git pushes and deploy hooks return `{"state":"PENDING"}` but
+the deployment never progresses to build. Manual redeploy from dashboard
+works fine.
+
+**Root cause:** A cron job or build queue issue on the account. The deploy
+hook registers the job but it never enters the build queue.
+
+**Fix:** Check for blocking cron jobs on the Hobby plan. If none found,
+contact Vercel support — this often requires a backend queue reset.
+
+---
+
+#### 24. Webhooks not triggering for non-production branches
+
+**Source:** [GitHub — vercel/vercel #14939](https://github.com/vercel/vercel/issues/14939)
+
+**Symptom:** After a Vercel incident, pushes to staging/preview branches no
+longer trigger deployments. Production (main) branch still works.
+
+**Root cause:** Post-incident state where webhook delivery for non-production
+branches was disrupted. The GitHub App shows webhooks being sent, but Vercel
+doesn't create deployments.
+
+**Fix (workaround):** Create a GitHub Actions workflow that triggers Vercel
+deployments via API when the webhook fails:
+```yaml
+- name: Trigger Vercel deploy
+  run: |
+    curl -X POST "https://api.vercel.com/v1/deployments" \
+      -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "staging", "gitSource": {"type": "github", "repoId": "...", "ref": "refs/heads/staging"}}'
+```
+
+---
+
+#### 25. CLI upload stalls on node_modules
+
+**Source:** [dev.to — Henry](https://dev.to/henry_dan_81513dd35a2f540/vercel-stopped-deploying-no-alert-no-error-just-old-code-4od7)
+
+**Symptom:** `vercel --prod` upload hangs at ~150MB+ and eventually times
+out.
+
+**Root cause:** No `.vercelignore` file, so the CLI is uploading
+`node_modules` (357MB+) along with the source code.
+
+**Fix:**
+```
+echo 'node_modules
+.next
+.cache' > .vercelignore
+```
+This drops the upload to ~39MB or less.
+
+---
+
+### Infrastructure & Platform
+
+#### 26. Middleware forces global deployment — single region failure blocks all
+
+**Source:** [AutoSmoke — Vercel Dubai outage](https://autosmoke.dev/blog/vercel-dubai-datacenter-outage-march-2026) · [Vercel Community — 34782](https://community.vercel.com/t/vercel-deployment-failure-with-internal-error-during-deploying-outputs-phase/34782)
+
+**Symptom:** Build succeeds but deployment fails during "Deploying outputs."
+Error is generic. The project uses Next.js Middleware for auth/redirects.
+
+**Root cause:** Middleware deploys to every Vercel region globally. If a
+single region (e.g., `dxb1` in Dubai) is unhealthy, the entire deploy fails.
+This happened March 2, 2026 — a 10+ hour incident where North American and
+European teams couldn't deploy because of a Dubai datacenter issue.
+
+**Fix:**
+- Check Vercel Status page first before debugging code
+- Consider removing Middleware if it handles simple redirects that could be
+  app-level
+- Pin regions explicitly: `"regions": ["iad1", "sfo1"]` in `vercel.json`
+- Have a rollback plan — Vercel keeps previous deployments accessible
+
+---
+
+## Cross-Cutting Patterns
+
+### Debugging Workflow
+
+When any CI/CD pipeline fails, follow this order:
+
+1. **Check the platform status page** — [Vercel Status](https://www.vercel-status.com/),
+   [GitHub Status](https://www.githubstatus.com/)
+2. **Read the expanded logs** — not the exit code, the output 3-4 lines below
+3. **Enable debug mode** — `ACTIONS_STEP_DEBUG=true`,
+   `ACTIONS_RUNNER_DEBUG=true`
+4. **Test locally** — `act` for GitHub Actions, `vercel dev` for Vercel
+5. **Build from CLI** — `vercel --prod` surfaces errors the dashboard hides
+
+### Prevention Checklist
+
+| What | How |
+|------|-----|
+| Lock CI runner versions | Pin `runs-on: ubuntu-22.04` instead of `latest` |
+| Pin action versions | `actions/checkout@v4` not `@main` |
+| Cache dependencies | `actions/setup-node` with `cache: 'npm'` |
+| Gate production deploys | `environment: production` with approval rules |
+| Validate vercel.json | `vercel --prod --confirm` in CI before merge |
+| Set timeout-minutes | Prevent hanging jobs from burning CI minutes |
+| Commit lockfiles | `package-lock.json` must be in version control |
+| Use `.vercelignore` | Exclude `node_modules`, `.next`, build artifacts |
+
+---
+
+## Source Index
+
+All sources accessed May 2026:
+
+| Source | URL |
+|--------|-----|
+| Stack Overflow — GH PAT SSO | https://stackoverflow.com/questions/79874764 |
+| Stack Overflow — GH permissions | https://stackoverflow.com/questions/75995802 |
+| Stack Overflow — GH permissions 2 | https://stackoverflow.com/questions/79750835 |
+| Stack Overflow — GH checkout freeze | https://stackoverflow.com/questions/79881327 |
+| Stack Overflow — GH cross-repo push | https://stackoverflow.com/questions/79471500 |
+| Stack Overflow — GH schedule not running | https://stackoverflow.com/questions/79919760 |
+| Stack Overflow — GH reusable workflows | https://stackoverflow.com/questions/78892735 |
+| Stack Overflow — Express 404 on Vercel | https://stackoverflow.com/questions/79709489 |
+| Stack Overflow — Next.js dynamic API 404 | https://stackoverflow.com/questions/79637669 |
+| Stack Overflow — SPA routing 404 | https://stackoverflow.com/questions/79715553 |
+| Stack Overflow — Next.js build fails Vercel | https://stackoverflow.com/questions/79369468 |
+| Stack Overflow — Vercel monorepo deploy | https://stackoverflow.com/questions/79290285 |
+| Stack Overflow — Nested router Vercel | https://stackoverflow.com/questions/78414753 |
+| Stack Overflow — Vercel build failure | https://stackoverflow.com/questions/79524416 |
+| GitHub — Vercel webhook issue | https://github.com/vercel/vercel/issues/14939 |
+| Vercel Community — Deploy outputs fail | https://community.vercel.com/t/vercel-deployment-failure-with-internal-error-during-deploying-outputs-phase/34782 |
+| Vercel Community — Deploy stuck PENDING | https://community.vercel.com/t/vercel-deployments-stuck-in-pending-state-across-all-projects/38381 |
+| Vercel Community — Deploy hook PENDING | https://community.vercel.com/t/pushes-to-main-deploy-hook-both-silently-fail-jobs-stuck-in-pending-never-reach-build-queue/40472 |
+| Vercel Community — Ongoing incident | https://community.vercel.com/t/ongoing-incident-elevated-errors-across-multiple-services/25298 |
+| Vercel Community — Build timeout | https://community.vercel.com/t/builds-timing-out-at-45-minutes-despite-completing-in-seconds/38084 |
+| dev.to — Silent deploy failure | https://dev.to/henry_dan_81513dd35a2f540/vercel-stopped-deploying-no-alert-no-error-just-old-code-4od7 |
+| dev.to — GA debugging guide | https://dev.to/yash_step2dev/how-to-debug-github-actions-failures-without-losing-your-mind-2o5l |
+| dev.to — 5 GA mistakes | https://dev.to/soniarotglam/5-github-actions-mistakes-that-will-slow-down-or-break-your-cicd-pipeline-3o4p |
+| dev.to — Main Branch guide | https://mainbranch.dev/articles/github-actions-fundamentals/ |
+| DevOpsBoys — CI/CD debugging | https://devopsboys.com/blog/cicd-pipeline-debugging-guide-2026 |
+| BSWEN — Common mistakes | https://docs.bswen.com/blog/2026-04-13-github-actions-common-mistakes/ |
+| BSWEN — Debugging | https://docs.bswen.com/blog/2026-04-13-github-actions-debugging/ |
+| StigCloud — Workflow not triggering | https://stigcloud.com/2026/05/01/github-actions-workflow-not-triggering-fix-it-fast/ |
+| Error Medic — Timeout/Permission guide | https://errormedic.com/devops/github-actions/github-actions-timeout-permission-denied-runner-offline-complete-troubleshooting-guide |
+| Luca Berton — 100 Vercel deploys | https://lucaberton.com/blog/vercel-100-deployments-free-tier-limit/ |
+| TClaw — Vercel broke | https://tclaw.dev/blog/day-7-github-vercel/ |
+| AutoSmoke — Dubai outage | https://autosmoke.dev/blog/vercel-dubai-datacenter-outage-march-2026 |
+| DevOps Tooling — GA variables | https://thedevopstooling.com/github-actions-variables/ |

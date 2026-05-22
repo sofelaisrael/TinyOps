@@ -1,0 +1,34 @@
+---
+title: "Zero-Downtime Deploys to Fly.io"
+slug: "deploy-fly-io"
+description: "Deploy your global apps to Fly.io with zero downtime and automated rolling updates."
+category: "Deployment"
+tags: ["fly-io", "docker", "global"]
+date: "2026-05-12"
+files: ["fly.toml", ".github/workflows/fly.yml"]
+secrets: ["FLY_API_TOKEN"]
+repoExample: "Fly.io Examples"
+repoUrl: "https://github.com/fly-apps"
+sources:
+  - title: "flyctl-actions - GitHub Action that wraps the flyctl"
+    type: github
+    url: "https://github.com/superfly/flyctl-actions"
+    repo: "superfly/flyctl-actions"
+    stars: 307
+  - title: "flyctl - Command line tools for fly.io services"
+    type: github
+    url: "https://github.com/superfly/flyctl"
+    repo: "superfly/flyctl"
+    stars: 1700
+---
+
+**Context:** We need a globally distributed app and chose Fly.io. We want a smooth CI/CD experience.
+
+**Goal:** Write a GitHub Action that uses `flyctl` to deploy our app.
+
+**Requirements:**
+1. Setup `flyctl`.
+2. Run `fly deploy --remote-only`.
+3. Perform a health check before finishing the deploy.
+
+**Output:** Provide the `fly.toml` basic structure and the GitHub Action.

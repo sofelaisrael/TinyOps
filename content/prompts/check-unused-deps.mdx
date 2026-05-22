@@ -1,0 +1,29 @@
+---
+title: "Check for Unused Dependencies in CI"
+slug: "check-unused-deps"
+description: "Keep your node_modules lean by failing the build if `depcheck` finds unused packages in your `package.json`."
+category: "Performance"
+tags: ["linting", "dependencies", "node"]
+date: "2026-05-09"
+files: [".github/workflows/lint.yml"]
+secrets: []
+repoExample: "Dub.co"
+repoUrl: "https://github.com/steven-tey/dub"
+sources:
+  - title: "depcheck - Check your npm module for unused dependencies"
+    type: github
+    url: "https://github.com/depcheck/depcheck"
+    repo: "depcheck/depcheck"
+    stars: 4900
+---
+
+**Context:** Over time, our `package.json` gets bloated with dependencies we no longer use. This increases build times and the attack surface.
+
+**Goal:** Add a CI step that runs `depcheck` and fails if it finds packages that are installed but not imported anywhere in the code.
+
+**Requirements:**
+1. Use `npx depcheck`.
+2. Configure ignores for packages that are used but not easily detectable (like `eslint-config-*`).
+3. Fail the job if any unused dependencies are found.
+
+**Output:** Provide the GitHub Action step and the `depcheck` configuration.

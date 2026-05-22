@@ -1,0 +1,45 @@
+---
+title: "Multi-Stage Docker Build with CI Scanning"
+slug: "docker-multi-stage"
+description: "Build efficient multi-stage Dockerfiles with separate build/run stages, CI linting, vulnerability scanning, and GitHub Actions caching."
+category: "Build"
+tags: ["docker", "multi-stage", "container", "security", "github-actions"]
+date: "2026-05-22"
+files: ["Dockerfile", ".github/workflows/docker-ci.yml"]
+secrets: []
+repoExample: "docker-library/ghost"
+repoUrl: "https://github.com/docker-library/ghost"
+sources:
+  - title: "Using variables across multi-stage docker build"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/54783504/using-variables-across-multi-stage-docker-build"
+    votes: 8
+  - title: "docker-build-with-cache-action — build and push with stage caching"
+    type: github
+    url: "https://github.com/whoan/docker-build-with-cache-action"
+    repo: "whoan/docker-build-with-cache-action"
+    stars: 351
+  - title: "Multi-Stage Dockerfiles"
+    type: devto
+    url: "https://dev.to/kalkwst/multi-stage-dockerfiles-3e90"
+    author: "kalkwst"
+    reactions: 13
+---
+
+**Context:** Your Docker builds are bloated (600MB+ images), slow (no layer caching), and ship without security scanning. Each image includes build tools that aren't needed at runtime.
+
+**Goal:** Create a multi-stage Dockerfile that produces minimal images (<100MB), with a CI pipeline that lints the Dockerfile, scans for vulnerabilities, and pushes to a registry — all with GHA cache acceleration.
+
+**Requirements:**
+1. Write a multi-stage Dockerfile with three stages: `base` (dependencies), `build` (compilation), and `production` (runtime-only).
+2. Use `FROM base AS build` and `FROM scratch` or `FROM gcr.io/distroless` as the final stage to minimize image size.
+3. Copy only the compiled artifacts from the build stage: `COPY --from=build /app/dist /app`.
+4. Add a `docker-lint` stage that runs `hadolint` on the Dockerfile and fails if rules are violated.
+5. In the CI workflow, use `docker/build-push-action@v6` with `cache-from: type=gha` and `cache-to: type=gha,mode=max` for layer caching.
+6. Add a Trivy scan step after the build: `trivy image --severity CRITICAL,HIGH my-image:latest`.
+7. Push to Docker Hub or GHCR only if the scan passes.
+8. Use `--build-arg` for version pinning to keep images reproducible.
+9. Show how to use `docker build --target` to build specific stages in CI (e.g., only lint, only test).
+10. Include a `.dockerignore` template to exclude `node_modules`, `.git`, and build logs from the context.
+
+**Output:** Provide a multi-stage Dockerfile, `.dockerignore`, and a GitHub Actions workflow with linting, scanning, and caching.

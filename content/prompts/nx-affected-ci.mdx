@@ -1,0 +1,45 @@
+---
+title: "Run Nx Affected Commands in CI"
+slug: "nx-affected-ci"
+description: "Only lint, test, and build the projects that changed in a pull request — using Nx affected commands with parallel execution in GitHub Actions."
+category: "Monorepo"
+tags: ["nx", "monorepo", "affected", "ci", "testing"]
+date: "2026-05-22"
+files: [".github/workflows/nx-ci.yml"]
+secrets: []
+repoExample: "nrwl/nx-examples"
+repoUrl: "https://github.com/nrwl/nx-examples"
+sources:
+  - title: "Running Nx Affected Commands in GitHub Actions"
+    type: devto
+    author: "ng-conf"
+    url: "https://dev.to/ngconf/running-nx-affected-commands-in-github-actions-32n6"
+    reactions: 85
+  - title: "Verify your pull requests in NX monorepos with GitHub Actions"
+    type: devto
+    author: "OctoLab Team"
+    url: "https://dev.to/octolab/verify-your-pull-requests-in-nx-monorepos-with-github-actions-1e96"
+    reactions: 12
+  - title: "nrwl/nx-set-shas"
+    type: github
+    repo: "nrwl/nx-set-shas"
+    url: "https://github.com/nrwl/nx-set-shas"
+    stars: 120
+---
+
+**Context:** Your Nx monorepo runs lint, test, and build for every project on every commit. As the repo grows, CI takes 30+ minutes even for a single-file change.
+
+**Goal:** Configure a GitHub Actions workflow that uses `nx affected` to run commands only on projects impacted by the changes in the current branch, with parallel distribution across runners.
+
+**Requirements:**
+1. Determine the base branch dynamically: use `git merge-base origin/main HEAD` for PRs, or `HEAD~1` for direct pushes.
+2. Derive the affected projects: `npx nx show projects --affected --base $BASE`.
+3. Run affected lint, test, and build in parallel using `npx nx affected -t lint test build --parallel=3`.
+4. Cache the Nx cache directory (`~/.cache/nx`) between CI runs using `actions/cache` with a key based on `nx.json` and `package-lock.json`.
+5. Enable Nx Cloud (or a distributed cache) to share results across CI runners — so the same build isn't repeated.
+6. Add a `nx.json` configuration for task pipelines: define which tasks depend on each other so Nx runs them in the correct order.
+7. Handle the case where `nx affected` returns no projects — skip the rest of the job.
+8. Print the affected projects at the start of the workflow for visibility.
+9. For PRs, comment the affected project list and test results on the PR using `actions/github-script`.
+
+**Output:** Provide a GitHub Actions workflow for Nx monorepo CI with affected commands, caching, and PR feedback.

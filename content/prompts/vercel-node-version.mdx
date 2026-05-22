@@ -1,0 +1,42 @@
+---
+title: "Pin the Correct Node.js Version for Vercel Deployments"
+slug: "vercel-node-version"
+description: "Prevent silent deploy failures by pinning a supported Node.js version in vercel.json or .nvmrc when the default version is too new."
+category: "Configuration"
+tags: ["vercel", "node", "version", "build", "deployment"]
+date: "2026-05-21"
+files: ["vercel.json", ".nvmrc"]
+secrets: []
+repoExample: "vercel/vercel"
+repoUrl: "https://github.com/vercel/vercel"
+sources:
+  - title: "Deployment doesn't respect choice of node v20 based on engines.node"
+    type: github
+    url: "https://github.com/vercel/vercel/issues/10850"
+    repo: "vercel/vercel"
+    stars: 15500
+  - title: "Wrong node version selected by vercel build"
+    type: devto
+    url: "https://community.vercel.com/t/wrong-node-version-selected-by-vercel-build/12733"
+    author: "Vercel Community"
+    reactions: 15
+  - title: "How can I set node js version in Vue app for vercel deployment?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/77072525/how-can-i-set-node-js-version-in-vue-app-for-vercel-deployment"
+    votes: 0
+---
+
+**Context:** A Vercel deployment fails with the generic error "Unexpected error. Please try again later" and no build logs. The root cause is an unsupported Node.js version specified in `vercel.json` or `.nvmrc` (e.g., Node 24 before Vercel supports it).
+
+**Goal:** Pin the Node.js version to a known supported release (20.x or 22.x) and verify compatibility before deployment.
+
+**Requirements:**
+1. Explain that Vercel supports a specific set of Node.js versions and silently fails on unsupported ones.
+2. Set `"node": "20.x"` in the `vercel.json` configuration under the root object.
+3. Alternatively: create an `.nvmrc` file with `20` or `22` and Vercel will respect it.
+4. Show how to check the current Node version on Vercel: add a build step `node --version` to the logs.
+5. Cover the priority order: `vercel.json` overrides `.nvmrc` overrides the project-level `engines` field in `package.json`.
+6. Include a CI check that validates the Node version against Vercel's supported matrix before deploying.
+7. Warn about major version jumps (Node 22 → 24) that can break `sharp`, `node-gyp`, or native modules.
+
+**Output:** Provide the configuration to pin Node.js version for Vercel and a CI validation step.

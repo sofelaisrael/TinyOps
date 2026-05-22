@@ -1,0 +1,39 @@
+---
+title: "Monorepo: Selective Test Execution"
+slug: "monorepo-selective-tests"
+description: "Save hours of CI time by only running tests for the packages that actually changed in your Turborepo."
+category: "Monorepo"
+tags: ["turborepo", "pnpm", "performance"]
+date: "2026-05-02"
+files: [".github/workflows/ci.yml", "turbo.json"]
+secrets: []
+repoExample: "Turborepo Kitchen Sink"
+repoUrl: "https://github.com/vercel/turbo/tree/main/examples/kitchen-sink"
+sources:
+  - title: "Docs: Clarify behaviour of `--affected` flag, and whether it takes `inputs` into account"
+    type: github
+    repo: "vercel/turborepo"
+    url: "https://github.com/vercel/turborepo/issues/9329"
+    stars: 30400
+  - title: "--affected and additional filters"
+    type: github
+    repo: "vercel/turborepo"
+    url: "https://github.com/vercel/turborepo/discussions/9076"
+    stars: 30400
+  - title: "Monorepo Mayhem? Tame Your CI/CD with GitHub Actions the Right Way"
+    type: devto
+    author: "Lalit Sharma"
+    url: "https://lalits77.medium.com/monorepo-mayhem-tame-your-ci-cd-with-github-actions-the-right-way-2adacbdd33c6"
+    reactions: 30
+---
+
+**Context:** Our monorepo is growing. Running all tests on every PR is becoming slow and expensive. We use Turborepo and pnpm.
+
+**Goal:** Configure GitHub Actions to use Turborepo's `--filter` flag to only run tasks (build, lint, test) for affected workspaces based on the git diff between the PR branch and `main`.
+
+**Requirements:**
+1. Use `turbo run test --filter=...[origin/main]`.
+2. Ensure git depth is sufficient for Turborepo to calculate changes (`fetch-depth: 0`).
+3. Handle dependencies correctly (if Package A changes, and Package B depends on A, run tests for both).
+
+**Output:** Provide the optimized GitHub Action YAML.

@@ -1,0 +1,38 @@
+---
+title: "Run Lighthouse CI on Vercel Previews"
+slug: "lighthouse-ci-vercel"
+description: "Automatically run Lighthouse audits on every Vercel preview deployment and fail the PR if performance scores drop."
+category: "Performance"
+tags: ["lighthouse", "performance", "web-vitals"]
+date: "2026-04-30"
+files: [".github/workflows/lighthouse.yml", ".lighthouserc"]
+secrets: ["VERCEL_TOKEN"]
+repoExample: "Next.js Commerce"
+repoUrl: "https://github.com/vercel/commerce"
+sources:
+  - title: "How can I set Lighthouse CI to only test accessibility?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/65550806/how-can-i-set-lighthouse-ci-to-only-test-accessibility"
+    votes: 7
+  - title: "Lighthouse-github-action-comment — PR comments with Lighthouse scores"
+    type: github
+    url: "https://github.com/OskarAhl/Lighthouse-github-action-comment"
+    repo: "OskarAhl/Lighthouse-github-action-comment"
+    stars: 61
+  - title: "Automated Lighthouse score to your PR with Vercel and GitHub Actions"
+    type: devto
+    url: "https://dev.to/oskarahl/automated-lighthouse-score-on-your-pr-with-vercel-and-github-actions-2ng2"
+    author: "Oskar Ahlroth"
+    reactions: 85
+---
+
+**Context:** We want to maintain high performance. Every pull request should be checked for Lighthouse scores before it's allowed to be merged.
+
+**Goal:** Integrate Lighthouse CI into the GitHub Actions pipeline. It should wait for the Vercel preview URL to be ready, then run the audit.
+
+**Requirements:**
+1. Wait for Vercel deployment to finish using `amannn/action-vercel-deploy` or similar.
+2. Run `@lhci/cli`.
+3. Post a comment on the PR with the results.
+
+**Output:** Provide the `.lighthouserc` config and the GitHub Action steps.

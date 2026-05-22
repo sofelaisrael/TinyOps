@@ -1,0 +1,42 @@
+---
+title: "Fix npm ci Failures in GitHub Actions"
+slug: "github-actions-npm-ci-fix"
+description: "Resolve ERR_PNPM_NO_LOCKFILE, EINTEGRITY, and permission issues when npm ci fails in CI — due to missing, out-of-sync, or corrupted lockfiles."
+category: "Build"
+tags: ["github-actions", "npm", "dependencies", "lockfile", "node"]
+date: "2026-05-21"
+files: ["package.json", "package-lock.json"]
+secrets: []
+repoExample: "npm/cli"
+repoUrl: "https://github.com/npm/cli"
+sources:
+  - title: "GitHub Actions fails on npm ci"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/70217629/github-actions-fails-on-npm-ci"
+    votes: 6
+  - title: "actions/cache — Node npm cache example"
+    type: github
+    url: "https://github.com/actions/cache/blob/main/examples.md#node---npm"
+    repo: "actions/cache"
+    stars: 5400
+  - title: "Speeding up GitHub Actions with npm cache"
+    type: devto
+    url: "https://dev.to/accreditly/speeding-up-github-actions-with-npm-cache-1712"
+    author: "accreditly"
+    reactions: 15
+---
+
+**Context:** The `npm ci` step in a GitHub Actions workflow fails with errors like `ERR_PNPM_NO_LOCKFILE`, `EINTEGRITY`, or permission conflicts. Root causes include a missing lockfile, a lockfile out of sync with `package.json`, committed `node_modules`, or a corrupted cache.
+
+**Goal:** Ensure the lockfile is committed, in sync, and valid — and configure the workflow to regenerate it cleanly when necessary.
+
+**Requirements:**
+1. Explain that `npm ci` requires an exact `package-lock.json` and fails fast if it's missing or mismatched.
+2. Verify the lockfile is committed and not in `.gitignore`.
+3. Provide a workflow diagnostic step that checks `package-lock.json` exists and compares its hash against `node_modules/.package-lock.json`.
+4. Show how to regenerate a valid lockfile: `rm -rf node_modules package-lock.json && npm install && git add package-lock.json && git commit -m "regenerate lockfile"`.
+5. Cover the `EINTEGRITY` error — clear the npm cache and the action cache key.
+6. Warn about committed `node_modules` — add it to `.gitignore` and remove from tracking.
+7. For pnpm and yarn: note the equivalent lockfile names and commands.
+
+**Output:** Provide a reusable workflow step that validates the lockfile state and regenerates it if needed.

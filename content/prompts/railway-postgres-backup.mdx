@@ -1,0 +1,45 @@
+---
+title: "Schedule PostgreSQL Backups on Railway"
+slug: "railway-postgres-backup"
+description: "Configure automated PostgreSQL backups using Railway cron jobs, with S3-compatible storage (Backblaze B2 / R2) and retention policy."
+category: "Database"
+tags: ["railway", "postgres", "backup", "cron", "s3"]
+date: "2026-05-22"
+files: ["railway.json", "backup.sh"]
+secrets: ["BACKUP_S3_ENDPOINT", "BACKUP_S3_ACCESS_KEY", "BACKUP_S3_SECRET_KEY", "BACKUP_S3_BUCKET"]
+repoExample: "railwayapp/starters"
+repoUrl: "https://github.com/railwayapp/starters"
+sources:
+  - title: "railwayapp-templates/postgres-s3-backups"
+    type: github
+    repo: "railwayapp-templates/postgres-s3-backups"
+    url: "https://github.com/railwayapp-templates/postgres-s3-backups"
+    stars: 93
+  - title: "imedwei/railway-postgres-backup"
+    type: github
+    repo: "imedwei/railway-postgres-backup"
+    url: "https://github.com/imedwei/railway-postgres-backup"
+    stars: 1
+  - title: "PostgreSQL backup to S3 — How to store your database backups in the cloud"
+    type: devto
+    author: "Lora Cole"
+    url: "https://medium.com/@x0goe/postgresql-backup-to-s3-how-to-store-your-database-backups-in-the-cloud-6acec4de9f7c"
+    reactions: 40
+---
+
+**Context:** You have a PostgreSQL database on Railway with production data and no automated backup. Manual pg_dump every time is error-prone. Railway supports cron jobs that can run scripts on a schedule.
+
+**Goal:** Deploy a cron service on Railway that dumps the database daily, uploads to S3-compatible storage, prunes backups older than 30 days, and alerts on failure.
+
+**Requirements:**
+1. Create a `railway.json` with a cron job configuration (`"schedule": "0 0 * * *"` for daily at midnight).
+2. Write a `backup.sh` script that uses `pg_dump` with Railway's `DATABASE_URL` environment variable.
+3. Compress the dump with gzip and upload to S3-compatible storage using `aws s3 cp` or `rclone`.
+4. Implement a retention policy: delete backups older than 30 days from the bucket.
+5. Add error handling: if pg_dump fails or the upload fails, exit with a non-zero code so Railway marks the cron run as failed.
+6. Include a restore procedure in the script (commented out) using `pg_restore` so it's ready when needed.
+7. Cover the `BACKUP_S3_ENDPOINT`/`BACKUP_S3_ACCESS_KEY`/`BACKUP_S3_SECRET_KEY` secrets setup in Railway dashboard.
+8. Note: Railway cron services have a 10-minute timeout — ensure pg_dump finishes within that window for your DB size.
+9. Provide a verification step: check the S3 bucket listing after the first run.
+
+**Output:** Provide the `backup.sh` script and `railway.json` configuration for a scheduled PostgreSQL backup service on Railway.

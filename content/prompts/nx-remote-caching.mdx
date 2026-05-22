@@ -1,0 +1,46 @@
+---
+title: "Share Nx Remote Caching Across Your Team"
+slug: "nx-remote-caching"
+description: "Configure Nx Cloud remote caching to share build artifacts across local machines and CI runners — cutting build times by 80%."
+category: "Performance"
+tags: ["nx", "cache", "remote", "monorepo", "performance"]
+date: "2026-05-22"
+files: ["nx.json"]
+secrets: ["NX_CLOUD_ACCESS_TOKEN"]
+repoExample: "nrwl/nx"
+repoUrl: "https://github.com/nrwl/nx"
+sources:
+  - title: "Drastically Cut CI Time in an Nx Monorepo with Remote Task Caching: A Step-by-Step Guide"
+    type: devto
+    author: "Andy Jessop"
+    url: "https://dev.to/andyjessop/drastically-cut-ci-time-with-remote-task-caching-a-step-by-step-guide-4in8"
+    reactions: 95
+  - title: "raegen/nx"
+    type: github
+    repo: "raegen/nx"
+    url: "https://github.com/raegen/nx"
+    stars: 15
+  - title: "Enable Read/Write Access to your Nx Remote Cache from CI"
+    type: devto
+    author: "Juri Strumpflohner"
+    url: "https://egghead.io/enable-read-write-access-to-your-nx-remote-cache-from-ci~d6ghd"
+    reactions: 20
+---
+
+**Context:** Every developer on your team runs the same builds locally — wasting compute time. CI also rebuilds everything on every run, even if the code hasn't changed.
+
+**Goal:** Configure Nx Cloud remote caching so build artifacts are shared across all machines — a build done once by any developer or CI runner is reused by everyone else.
+
+**Requirements:**
+1. Enable Nx Cloud in `nx.json` by adding `"cloud": { "url": "https://cloud.nx.app" }`.
+2. Install the `nx-cloud` package: `npm install -D nx-cloud`.
+3. Generate an access token from the Nx Cloud dashboard and store it as `NX_CLOUD_ACCESS_TOKEN` in repository secrets and local `.env.local`.
+4. Verify the cache is working: run `npx nx build my-app` twice — the second run should be sub-second.
+5. Configure cache read/write permissions in `nx.json` for security: only allow writes from CI, reads from everywhere.
+6. Set up a custom cache URL for self-hosted Nx Cloud if you don't want to use the public cloud.
+7. Exclude the `.nx/cache` directory from git and add it to `.gitignore`. 
+8. Debug cache misses by running `npx nx build my-app --verbose` to see why a cache was invalidated.
+9. Handle cache staleness: Nx automatically invalidates the remote cache when inputs change (source files, environment variables, dependencies).
+10. Show how to override the cache key for specific tasks using `inputs` in `targetDefaults`.
+
+**Output:** Provide the `nx.json` configuration for remote caching and a verification workflow that confirms cache hits in CI.

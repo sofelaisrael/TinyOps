@@ -1,0 +1,36 @@
+---
+title: "Fix actions/checkout Freeze on macOS Self-Hosted Runners"
+slug: "github-actions-checkout-freeze"
+description: "Resolve git-credential-osxkeychain deadlocks that cause actions/checkout to hang indefinitely on macOS self-hosted runners."
+category: "Debugging"
+tags: ["github-actions", "macos", "self-hosted", "checkout", "freeze"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: []
+repoExample: "actions/checkout"
+repoUrl: "https://github.com/actions/checkout"
+sources:
+  - title: "Github Actions self hosted runner on macOS tries to checkout repository forever"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/79881327/github-actions-self-hosted-runner-on-macos-tries-to-checkout-repository-forever"
+    votes: 0
+  - title: "Why Your GitHub Action Hangs on macOS Checkout (And How to Solve It)"
+    type: devto
+    url: "https://code-examples.net/en/q/4c2e46f/why-your-github-action-hangs-on-macos-checkout-and-how-to-solve-it"
+    author: "code-examples.net"
+    reactions: 5
+---
+
+**Context:** `actions/checkout` hangs indefinitely on macOS self-hosted runners with the last log line `trace: exec: git-credential-osxkeychain store`. This is caused by a deadlock in the macOS keychain credential helper when multiple jobs attempt checkout concurrently.
+
+**Goal:** Clear the workspace before checkout to prevent the credential helper deadlock, or replace the credential helper with a file-based fallback.
+
+**Requirements:**
+1. Explain the root cause: `git-credential-osxkeychain` deadlocks under concurrent access on macOS.
+2. Add a pre-checkout step that clears the workspace: `find "$GITHUB_WORKSPACE" -mindepth 1 -maxdepth 1 -exec rm -rf {} +`.
+3. Provide an alternative fix: set `GIT_CREDENTIAL_HELPER` to an in-memory cache or disable it transiently.
+4. Cover the case where the runner has multiple labels — restrict the freeze-prone job to macOS only.
+5. Include a timeout safeguard on the checkout step to fail fast instead of hanging.
+6. Note: this only affects macOS self-hosted runners, not GitHub-hosted macOS runners.
+
+**Output:** Provide a workflow snippet that prevents checkout deadlocks on macOS, with both the workspace-clear and credential-helper approaches.

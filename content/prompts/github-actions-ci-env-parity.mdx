@@ -1,0 +1,38 @@
+---
+title: "Match CI Environment to Local Development"
+slug: "github-actions-ci-env-parity"
+description: "Eliminate 'works on my machine' failures by pinning runner versions, syncing Node/Python/system packages, and mirroring local env vars."
+category: "Testing"
+tags: ["github-actions", "testing", "environment", "ci"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: []
+repoExample: "nodejs/node"
+repoUrl: "https://github.com/nodejs/node"
+sources:
+  - title: "Store information in variables"
+    type: devto
+    url: "https://docs.github.com/en/actions/learn-github-actions/variables"
+    author: "GitHub Docs"
+    reactions: 40
+  - title: "actions/setup-node"
+    type: github
+    url: "https://github.com/actions/setup-node"
+    repo: "actions/setup-node"
+    stars: 4300
+---
+
+**Context:** Tests pass on a local machine but fail in GitHub Actions CI. The discrepancy is caused by environment differences: different Node versions, missing system libraries, case-sensitive filesystem, different timezone, or missing environment variables.
+
+**Goal:** Create a CI configuration that matches the local development environment as closely as possible, and includes diagnostic steps to surface any remaining differences.
+
+**Requirements:**
+1. Pin the runner OS version — use `ubuntu-22.04` instead of `ubuntu-latest` to avoid unexpected updates.
+2. Pin tool versions explicitly — `actions/setup-node@v4` with `node-version: '20'` instead of relying on the runner default.
+3. Print the full CI environment at the start of the workflow (OS, Node, npm, Python, Docker versions).
+4. Add a step that checks for missing system dependencies (build-essential, libssl, Python headers) and installs them explicitly.
+5. Alert on known differences: CI runs in UTC — ensure tests that depend on timezone are aware.
+6. Handle filesystem case sensitivity: macOS is case-insensitive, Linux runners are case-sensitive. Add a lint step for import case mismatches.
+7. Provide an `.env.ci` template that mirrors local `.env` with placeholder values for required variables.
+
+**Output:** Provide the complete CI workflow with environment parity checks, pinned tool versions, and a diagnostic summary step.

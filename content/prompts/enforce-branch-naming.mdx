@@ -1,0 +1,37 @@
+---
+title: "Enforce Branch Naming Conventions"
+slug: "enforce-branch-naming"
+description: "Keep your repository clean by automatically failing CI if a branch name doesn't follow your team's convention (e.g., feat/, fix/)."
+category: "Security"
+tags: ["governance", "linting", "workflow"]
+date: "2026-05-07"
+files: [".github/workflows/branch-check.yml"]
+secrets: []
+repoExample: "Turborepo"
+repoUrl: "https://github.com/vercel/turbo"
+sources:
+  - title: "GitHub Actions to enforce proper branch names & PR merging"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/78027957/github-actions-to-enforce-proper-branch-names-pr-merging"
+    votes: 5
+  - title: "action-branch-name — GitHub Action for branch name validation"
+    type: github
+    url: "https://github.com/deepakputhraya/action-branch-name"
+    repo: "deepakputhraya/action-branch-name"
+    stars: 87
+  - title: "Automating Semantic Versioning with GitHub Actions and Branch Naming Conventions"
+    type: devto
+    url: "https://dev.to/der_gopher/automating-semantic-versioning-with-github-actions-and-branch-naming-conventions-mpa"
+    author: "Alex Pliutau"
+    reactions: 4
+---
+
+**Context:** We want to maintain a clean git history. Developers should name branches like `feat/abc` or `fix/123`.
+
+**Goal:** Create a lightweight GitHub Action that runs on `pull_request` and regex checks the head branch name.
+
+**Requirements:**
+1. Use a simple bash script or a community action like `deepakputhraya/action-branch-name`.
+2. Fail the build with a helpful message: "Your branch name must start with feat/, fix/, or chore/."
+
+**Output:** Provide the YAML for the branch name check.

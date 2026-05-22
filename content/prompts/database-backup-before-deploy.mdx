@@ -1,0 +1,39 @@
+---
+title: "Run Database Backups Before Deploy"
+slug: "database-backup-before-deploy"
+description: "Automatically trigger a database snapshot/backup before running migrations and deploying new code to prevent data loss."
+category: "Database"
+tags: ["backup", "postgres", "safety"]
+date: "2026-05-06"
+files: [".github/workflows/deploy.yml"]
+secrets: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "DATABASE_URL"]
+repoExample: "PostHog"
+repoUrl: "https://github.com/PostHog/posthog"
+sources:
+  - title: "Automated backups using GitHub Actions"
+    type: devto
+    url: "https://supabase.com/docs/guides/deployment/ci/backups"
+    author: "Supabase Docs"
+    reactions: 30
+  - title: "postgres-s3-backups"
+    type: github
+    url: "https://github.com/render-examples/postgres-s3-backups"
+    repo: "render-examples/postgres-s3-backups"
+    stars: 24
+  - title: "Nightly Postgres Backups via GitHub Actions"
+    type: devto
+    url: "https://joshstrange.com/2024/04/26/nightly-postgres-backups-via-github-actions"
+    author: "Josh Strange"
+    reactions: 10
+---
+
+**Context:** We are terrified of a bad migration corrupting our production data. We want an automated safety net.
+
+**Goal:** Add a step to the deployment workflow that takes a snapshot of our Postgres database (e.g., via `pg_dump` to S3 or a cloud provider's API) before the migration step begins.
+
+**Requirements:**
+1. Use `pg_dump` and pipe to AWS S3.
+2. Wait for the backup to confirm success before proceeding to `prisma migrate deploy`.
+3. Auto-tag the backup with the git commit SHA.
+
+**Output:** Provide the GitHub Action step for the backup.

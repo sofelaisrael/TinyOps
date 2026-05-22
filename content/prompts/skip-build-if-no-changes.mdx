@@ -1,0 +1,35 @@
+---
+title: "Skip Vercel Build if No Frontend Changes"
+slug: "skip-build-if-no-changes"
+description: "A custom bash script for Vercel's 'Ignored Build Step' to skip builds if only backend/docs folders changed."
+category: "Cost Optimization"
+tags: ["bash", "vercel-settings", "monorepo"]
+date: "2026-04-25"
+files: ["scripts/ignore-build.sh"]
+secrets: []
+repoExample: "facebook/react"
+repoUrl: "https://github.com/facebook/react"
+sources:
+  - title: "Vercel ignore build step according to folder of committed files"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/70101725/vercel-ignore-build-step-according-to-folder-of-committed-files"
+    votes: 5
+  - title: "How can I stop Vercel preview deployments from appearing on pull requests?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/68232548/how-can-i-stop-vercel-preview-deployments-from-appearing-on-pull-requests"
+    votes: 21
+  - title: "lfades/vercel-ignore"
+    type: github
+    repo: "lfades/vercel-ignore"
+    url: "https://github.com/lfades/vercel-ignore"
+    stars: 2
+---
+
+**Context:** My repository has a `docs/` folder, a `backend/` folder (Python), and a `frontend/` folder (Next.js). I deploy the frontend to Vercel.
+**Goal:** I want to use Vercel's "Ignored Build Step" feature to prevent Vercel from building if changes were only made to the `docs/` or `backend/` folders.
+**Requirements:**
+1. Write a precise Bash script `ignore-build.sh`.
+2. The script must use `git diff` to check if any files in the `frontend/` directory (or `package.json`) have changed in the latest commit.
+3. If changes exist in `frontend/`, the script must exit with code `1` (telling Vercel to build).
+4. If no changes exist in `frontend/`, it must exit with code `0` (telling Vercel to cancel the build).
+**Output:** Provide the bash script and instructions on where to paste the execution command in the Vercel Dashboard settings.

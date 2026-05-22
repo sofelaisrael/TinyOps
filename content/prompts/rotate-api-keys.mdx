@@ -1,0 +1,38 @@
+---
+title: "Rotational API Key Updates in GitHub/Vercel"
+slug: "rotate-api-keys"
+description: "Automatically rotate sensitive API keys every 30 days and update both GitHub Secrets and Vercel Env Vars."
+category: "Security"
+tags: ["security", "automation", "rotation"]
+date: "2026-05-01"
+files: [".github/workflows/rotate-keys.yml"]
+secrets: ["GH_PAT", "VERCEL_TOKEN", "PROVIDER_API_KEY"]
+repoExample: "Infisical"
+repoUrl: "https://github.com/Infisical/infisical"
+sources:
+  - title: "How to rotate Github API secrets automatically?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/70049871/how-to-rotate-github-api-secrets-automatically"
+    votes: 3
+  - title: "Best Practices for Managing and Rotating Secrets in GitHub Repositories"
+    type: github
+    repo: "orgs/community/discussions"
+    url: "https://github.com/orgs/community/discussions/168661"
+    stars: 0
+  - title: "Automated secrets rotation with Doppler and GitHub Actions"
+    type: devto
+    author: "Doppler"
+    url: "https://www.doppler.com/blog/automated-secrets-rotation-with-doppler-and-github-actions"
+    reactions: 25
+---
+
+**Context:** Security compliance requires us to rotate our third-party API keys monthly. Doing this manually is a chore and a risk.
+
+**Goal:** Create a scheduled GitHub Action (cron) that calls the third-party provider to generate a new key, then uses the GitHub API and Vercel CLI to update the stored secrets.
+
+**Requirements:**
+1. Schedule with `cron: '0 0 1 * *'`.
+2. Use a GitHub Personal Access Token (PAT) with `secrets` scope.
+3. Include error handling so the old key isn't deleted until the new one is confirmed in both places.
+
+**Output:** Provide the workflow structure and the API calls needed for GitHub/Vercel.

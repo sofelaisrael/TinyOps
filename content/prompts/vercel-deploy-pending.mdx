@@ -1,0 +1,43 @@
+---
+title: "Unstick Vercel Deployments Stuck in PENDING"
+slug: "vercel-deploy-pending"
+description: "Troubleshoot and resolve Vercel deployments that stay in PENDING state — triggered by git pushes or deploy hooks — when manual redeploy works."
+category: "Debugging"
+tags: ["vercel", "deployment", "pending", "stuck", "debugging"]
+date: "2026-05-21"
+files: []
+secrets: ["VERCEL_TOKEN"]
+repoExample: "vercel/vercel"
+repoUrl: "https://github.com/vercel/vercel"
+sources:
+  - title: "Vercel deployments stuck in PENDING state across all projects"
+    type: devto
+    url: "https://community.vercel.com/t/vercel-deployments-stuck-in-pending-state-across-all-projects/38381"
+    author: "Vercel Community"
+    reactions: 30
+  - title: "GitHub Push Events Not Triggering Vercel Deployments"
+    type: devto
+    url: "https://community.vercel.com/t/github-push-events-not-triggering-vercel-deployments/8082"
+    author: "Vercel Community"
+    reactions: 25
+  - title: "All deployments stuck as queued"
+    type: devto
+    url: "https://community.vercel.com/t/all-deployments-stuck-as-queued/27808"
+    author: "Vercel Community"
+    reactions: 20
+---
+
+**Context:** Git pushes and deploy hooks return `{"state":"PENDING"}` but the deployment never progresses to the build phase. Manual redeploy from the Vercel dashboard works fine. This is often a build queue issue or cron job conflict on a Hobby plan.
+
+**Goal:** Diagnose the cause of stuck PENDING deployments and unblock the queue either by clearing cron jobs or contacting Vercel support.
+
+**Requirements:**
+1. Explain why deployments get stuck in PENDING: build queue backlog, cron job conflicts on Hobby plan, or account-level issues.
+2. Check for blocking cron jobs in the Vercel dashboard under Settings → Cron Jobs.
+3. Use the Vercel CLI to cancel pending deployments: `vercel list` then `vercel rm <deployment-id>`.
+4. Show how to use the Vercel API to cancel all pending deployments programmatically.
+5. If no cron jobs or queue issues are found, provide the contact Vercel support path with relevant context.
+6. Add a preventive measure: set a `timeout` on deployment hooks and add a retry mechanism.
+7. Include a curl example that cancels stuck deployments via the Vercel API.
+
+**Output:** Provide a diagnostic checklist and a cancel-stuck-deployments script.

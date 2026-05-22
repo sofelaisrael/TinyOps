@@ -1,0 +1,41 @@
+---
+title: "Configure GITHUB_TOKEN Permissions in GitHub Actions"
+slug: "github-actions-workflow-permissions"
+description: "Set up explicit GITHUB_TOKEN permissions so your workflows can push, create releases, comment on PRs, and push to GHCR without 403 errors."
+category: "Security"
+tags: ["github-actions", "permissions", "authentication", "security"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: []
+repoExample: "actions/starter-workflows"
+repoUrl: "https://github.com/actions/starter-workflows"
+sources:
+  - title: "GitHub actions \"Resource not accessible by integration\""
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/77882485/github-actions-resource-not-accessible-by-integration"
+    votes: 4
+  - title: "Use GITHUB_TOKEN for authentication in workflows"
+    type: github
+    repo: "github/docs"
+    url: "https://docs.github.com/en/actions/tutorials/authenticate-with-github_token"
+    stars: 0
+  - title: "I Spent 2 Days Fighting GitHub Actions Permissions - Here's How to Fix It"
+    type: devto
+    author: "Mark AI Code"
+    url: "https://markaicode.com/github-actions-permissions-fix"
+    reactions: 15
+---
+
+**Context:** GitHub Actions workflows fail with "Resource not accessible by integration" or "Permission to repo.git denied to github-actions[bot]" because the default GITHUB_TOKEN has read-only permissions.
+
+**Goal:** Configure explicit `permissions` blocks at the workflow and job level to grant only the minimum scopes needed for each operation (push, release, PR comments, GHCR, etc.).
+
+**Requirements:**
+1. Explain the default GITHUB_TOKEN permission model (read-only on public repos, configurable at org level).
+2. Add workflow-level and job-level `permissions:` blocks for the most common operations: `contents: write`, `pull-requests: write`, `packages: write`, `issues: write`.
+3. Show the difference between `GITHUB_TOKEN` and a Personal Access Token for cross-repo operations.
+4. Include a diagnostic step that dumps the current token's effective permissions.
+5. Cover the `workflows` permission — needed when a workflow pushes changes to other workflow files.
+6. Provide a decision table: for each operation (create release, push tag, comment PR, push to GHCR, etc.), show which permission is required.
+
+**Output:** Provide a reference template with commented permission blocks and a decision table mapping operations to required scopes.

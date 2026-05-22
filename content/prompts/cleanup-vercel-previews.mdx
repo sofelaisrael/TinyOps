@@ -1,0 +1,40 @@
+---
+title: "Cleanup Vercel Preview Deployments"
+slug: "cleanup-vercel-previews"
+description: "Save on Vercel costs by automatically deleting stale preview deployments when PRs are closed."
+category: "Cost Optimization"
+tags: ["vercel-cli", "cost", "cleanup"]
+date: "2026-04-25"
+files: [".github/workflows/cleanup.yml"]
+secrets: ["VERCEL_TOKEN"]
+repoExample: "Vercel Examples"
+repoUrl: "https://github.com/vercel/examples"
+sources:
+  - title: "Wait for Vercel Preview — A GitHub Action"
+    type: github
+    url: "https://github.com/patrickedqvist/wait-for-vercel-preview"
+    repo: "patrickedqvist/wait-for-vercel-preview"
+    stars: 159
+  - title: "Preview Deployment Pipeline with GitHub Actions & Vercel"
+    type: github
+    url: "https://github.com/poppyszn/Dynamic-Preview-Deployments-with-GitHub-Actions-Vercel"
+    repo: "poppyszn/Dynamic-Preview-Deployments-with-GitHub-Actions-Vercel"
+    stars: 0
+  - title: "How can I use GitHub Actions with Vercel?"
+    type: devto
+    url: "https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel"
+    author: "Lee Robinson"
+    reactions: 50
+---
+
+**Context:** My team creates dozens of pull requests a week, leading to a massive accumulation of Vercel preview deployments that we don't need after the PR is merged or closed.
+
+**Goal:** Create a GitHub Action that triggers whenever a Pull Request is closed (either merged or discarded) and uses the Vercel CLI to remove the associated preview deployment to keep our dashboard clean and manage costs.
+
+**Requirements:**
+1. Trigger on `pull_request` with `types: [closed]`.
+2. Use the Vercel CLI to find deployments for the specific PR branch.
+3. Remove those deployments.
+4. Handle cases where the deployment might have already been deleted.
+
+**Output:** Provide the GitHub Action YAML and the specific Vercel CLI command to filter by branch name.

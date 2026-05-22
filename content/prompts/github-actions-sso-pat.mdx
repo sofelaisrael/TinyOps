@@ -1,0 +1,41 @@
+---
+title: "Authorize a PAT for SSO-Protected Organizations"
+slug: "github-actions-sso-pat"
+description: "Resolve 'Resource not accessible by integration' and 'Not Found' errors when a PAT works in the browser but fails in CI for SSO-enabled enterprise repos."
+category: "Security"
+tags: ["github-actions", "sso", "pat", "enterprise", "authentication"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: ["PAT_TOKEN"]
+repoExample: "github/hub"
+repoUrl: "https://github.com/github/hub"
+sources:
+  - title: "How to config git to use PAT token in GitHub actions checkout"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/67030607/how-to-config-git-to-use-pat-token-in-github-actions-checkout"
+    votes: 10
+  - title: "\"Resource not accessible by integration\" on GitHub post /repos/.../actions/runners/registration-token API"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/70435286/resource-not-accessible-by-integration-on-github-post-repos-owner-repo-ac"
+    votes: 19
+  - title: "Fix GitHub Actions 'Resource not accessible by integration'"
+    type: devto
+    author: "DevOpsIL"
+    url: "https://devopsil.com/articles/2026-03-30-github-actions-resource-not-accessible-fix"
+    reactions: 8
+---
+
+**Context:** A Personal Access Token (PAT) works perfectly in the browser but `actions/checkout` returns "Not Found" for a private enterprise repo in CI. The PAT has the correct `repo` scope but was never authorized for the SSO-protected organization.
+
+**Goal:** Authorize the PAT for each SSO-protected organization by completing the "Configure SSO" flow in GitHub settings.
+
+**Requirements:**
+1. Explain that PATs require explicit SSO authorization per-org, even if they have the correct scopes.
+2. Walk through the fix: GitHub → Settings → Developer settings → Personal Access Tokens → Configure SSO → Authorize for each org.
+3. For fine-grained PATs: show where to set the "Owner" and resource repository access.
+4. Cover how to test the PAT in CI before using it: add a diagnostic step that calls the GitHub API with the token.
+5. Show how to verify the PAT's org authorizations using `curl -H "Authorization: Bearer $TOKEN" https://api.github.com/user/orgs`.
+6. Warn that expired SAML sessions may cause SSO authorization to drop — tokens may need periodic re-authorization.
+7. Include a checklist: check scopes, check SSO, check token expiration, check org membership.
+
+**Output:** Provide a PAT SSO authorization walkthrough and a CI diagnostic step to verify token access to the target org.

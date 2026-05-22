@@ -1,0 +1,36 @@
+---
+title: "Run Playwright Tests Before Vercel Preview"
+slug: "playwright-vercel-preview"
+description: "Block Vercel preview deployments until your Playwright E2E tests pass in GitHub Actions."
+category: "Testing"
+tags: ["playwright", "monorepo", "vercel-cli"]
+date: "2026-04-25"
+files: [".github/workflows/preview.yml"]
+secrets: ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"]
+repoExample: "calcom/cal.com"
+repoUrl: "https://github.com/calcom/cal.com/blob/main/.github/workflows/e2e.yml"
+sources:
+  - title: "Playwright E2E Tests Passing Locally but Failing in GitHub Actions with Next.js 14"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/78915766/playwright-e2e-tests-passing-locally-but-failing-in-github-actions-with-next-js"
+    votes: 5
+  - title: "How to Run Playwright Tests in GitHub Actions (With Preview Environment Support)"
+    type: github
+    url: "https://github.com/Autonoma-Tools/playwright-github-actions"
+    repo: "Autonoma-Tools/playwright-github-actions"
+  - title: "How to Run End-to-End Tests on Vercel Preview Deployments"
+    type: devto
+    url: "https://dev.to/thisdotmedia_staff/how-to-run-end-to-end-tests-on-vercel-preview-deployments-5e65"
+    author: "This Dot Media"
+    reactions: 5
+---
+
+**Context:** I have a Next.js project using pnpm. I am deploying to Vercel.
+**Goal:** Write a GitHub Actions `.yml` workflow that triggers on a pull request to the `main` branch.
+**Requirements:**
+1. Use `actions/setup-node` and cache pnpm dependencies globally to save build minutes.
+2. Install Playwright browsers and run `pnpm test:e2e`.
+3. *Crucial:* If and only if the tests pass, use the `vercel CLI` (with `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` secrets) to trigger a Preview Deployment.
+4. Use a GitHub Action step to comment the resulting Vercel Preview URL directly on the PR.
+5. Ensure I know exactly what settings to change in the Vercel Dashboard to disable automatic deployments so this action takes full control.
+**Output:** Provide the complete YAML file and a step-by-step list of Vercel dashboard configurations needed.

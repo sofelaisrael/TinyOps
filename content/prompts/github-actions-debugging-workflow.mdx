@@ -1,0 +1,38 @@
+---
+title: "Debug GitHub Actions Workflow Failures Systematically"
+slug: "github-actions-debugging-workflow"
+description: "A step-by-step diagnostic pipeline for failed GitHub Actions runs — log analysis, debug mode, local reproduction, and common error patterns."
+category: "Testing"
+tags: ["github-actions", "debugging", "testing", "ci"]
+date: "2026-05-21"
+files: [".github/workflows/debug.yml"]
+secrets: []
+repoExample: "actions/runner"
+repoUrl: "https://github.com/actions/runner"
+sources:
+  - title: "action-tmate - Debug your GitHub Actions via SSH by using tmate"
+    type: github
+    url: "https://github.com/mxschmitt/action-tmate"
+    repo: "mxschmitt/action-tmate"
+    stars: 3500
+  - title: "Caching dependencies to speed up workflows"
+    type: devto
+    url: "https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows"
+    author: "GitHub Docs"
+    reactions: 60
+---
+
+**Context:** A GitHub Actions workflow fails with "Process completed with exit code 1" or "Tests pass locally but fail in CI." The error message is cryptic and the logs are hard to navigate.
+
+**Goal:** Create a systematic debugging workflow and checklist that surfaces the real cause of CI failures — including environment differences, missing secrets, cache corruption, and runner-specific issues.
+
+**Requirements:**
+1. Create a `debug.yml` workflow that dumps the full environment: OS version, Node/npm/Python versions, env variables, working directory contents, and GitHub context.
+2. Enable `ACTIONS_STEP_DEBUG: true` and `ACTIONS_RUNNER_DEBUG: true` via repository secrets.
+3. Add steps to compare CI environment with local development environment (timezone, file system case sensitivity, available system packages).
+4. Include a `tmate` SSH debugging session step (disabled by default, toggle via workflow_dispatch input).
+5. Add a cache clear step with a manual override to force a fresh run.
+6. Cover the most common failure patterns and their exit codes: exit 1 (general), 127 (command not found), 137 (OOM), 139 (segfault).
+7. Output instructions for using `act` to run workflows locally for faster iteration.
+
+**Output:** Provide the complete `debug.yml` workflow file, a debugging checklist, and an exit code reference table.

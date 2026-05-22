@@ -1,0 +1,39 @@
+---
+title: "Deploy Next.js to AWS Amplify"
+slug: "deploy-aws-amplify"
+description: "A robust prompt for deploying Next.js applications to AWS Amplify with automatic branch detection."
+category: "Deployment"
+tags: ["aws", "amplify", "nextjs"]
+date: "2026-05-10"
+files: ["amplify.yml"]
+secrets: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]
+repoExample: "AWS Amplify Examples"
+repoUrl: "https://github.com/aws-amplify/amplify-hosting"
+sources:
+  - title: "Deploy a Next.js App to AWS Amplify"
+    type: devto
+    url: "https://dev.to/aws/deploy-a-next-js-app-to-aws-amplify-3571"
+    author: "Ali Spittel"
+    reactions: 120
+  - title: "Deploy a Next.js app to Amplify Hosting"
+    type: devto
+    url: "https://docs.aws.amazon.com/amplify/latest/userguide/getting-started-next.html"
+    author: "AWS Documentation"
+    reactions: 20
+  - title: "amplify-hosting"
+    type: github
+    url: "https://github.com/aws-amplify/amplify-hosting"
+    repo: "aws-amplify/amplify-hosting"
+    stars: 380
+---
+
+**Context:** I have a Next.js 15 app and want to host it on AWS Amplify. I need a CI/CD pipeline that builds and deploys on every push to main.
+
+**Goal:** Generate the `amplify.yml` configuration and the GitHub Action to trigger a manual deployment if needed.
+
+**Requirements:**
+1. Handle ISR and SSR correctly.
+2. Cache `node_modules` and `.next/cache`.
+3. Set up environment variables via the Amplify Console.
+
+**Output:** Provide the `amplify.yml` file content.

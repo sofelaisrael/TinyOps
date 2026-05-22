@@ -1,0 +1,41 @@
+---
+title: "Validate vercel.json Configuration Before Deployment"
+slug: "vercel-config-validation"
+description: "Catch silent vercel.json config errors in CI — validate redirects, rewrites, headers, and region settings before they break deployments."
+category: "Deployment"
+tags: ["vercel", "configuration", "validation", "ci"]
+date: "2026-05-21"
+files: [".github/workflows/vercel-validate.yml", "vercel.json"]
+secrets: []
+repoExample: "vercel/vercel"
+repoUrl: "https://github.com/vercel/vercel"
+sources:
+  - title: "Project Configuration - Vercel"
+    type: devto
+    url: "https://vercel.com/docs/project-configuration"
+    author: "Vercel Docs"
+    reactions: 40
+  - title: "Vercel Build Failed — Common Errors and How to Fix Them"
+    type: devto
+    url: "https://www.aimadetools.com/blog/vercel-build-failed-fix/"
+    author: "Aimade Tools"
+    reactions: 15
+---
+
+**Context:** A `vercel.json` config validation error (e.g., specifying both `permanent: true` and `statusCode: 301` on the same redirect) causes Vercel to silently discard deployments. The webhook fires, validation fails, and the dashboard keeps showing the old deployment — with zero notification.
+
+**Goal:** Create a CI validation step that catches `vercel.json` errors before they reach production, and document the most common silent-failure config mistakes.
+
+**Requirements:**
+1. Write a CI job that runs `vercel --prod --confirm` or validates the config locally before merge.
+2. List the top 5 silent-fail vercel.json mistakes:
+   - `permanent` + `statusCode` on the same redirect
+   - Incorrect `distDir` path causing blank white screen
+   - Missing `distDir` in static-build config
+   - Conflicting `routes` and `rewrites` patterns
+   - Incorrect Node.js version specification
+3. Include a `vercel.json` template with all fields correctly typed.
+4. Cover validation of environment-specific configs (preview vs production branches).
+5. Add a pre-commit hook or GitHub Action that parses `vercel.json` and checks for known bad patterns.
+
+**Output:** Provide the CI validation workflow, a linting script for vercel.json, and a reference template annotated with common pitfalls.

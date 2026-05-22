@@ -1,0 +1,37 @@
+---
+title: "Fix Dynamic API Routes Returning 404/405 on Vercel"
+slug: "vercel-dynamic-api-routes"
+description: "Resolve 404 and 405 errors on Next.js dynamic API routes (/api/[id]) deployed to Vercel caused by directory conflicts or PWA config."
+category: "Debugging"
+tags: ["vercel", "nextjs", "api-routes", "dynamic-routes", "404"]
+date: "2026-05-21"
+files: ["next.config.js", "api/"]
+secrets: []
+repoExample: "vercel/next.js"
+repoUrl: "https://github.com/vercel/next.js"
+sources:
+  - title: "failed to fetch dynamically imported module in vercel deployment"
+    type: github
+    url: "https://github.com/sveltejs/kit/issues/7605"
+    repo: "sveltejs/kit"
+    stars: 20500
+  - title: "Vercel Rewrite: SPA Fallback except for API endpoint"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/64920230/vercel-rewrite-spa-fallback-except-for-api-endpoint"
+    votes: 6
+---
+
+**Context:** Static API routes (`/api/health`) work fine on Vercel, but dynamic routes (`/api/v1/wallet/expenses/[id]`) return 405 with `X-Matched-Path: /404`. This is caused by a root-level `api/` directory conflicting with Next.js's built-in `pages/api` directory, or by `next-pwa` configuration interfering with routing.
+
+**Goal:** Identify and remove the conflicting root-level `api/` directory, and disable or reconfigure any PWA middleware that intercepts all routes.
+
+**Requirements:**
+1. Explain the root cause: a root-level `api/` directory (outside `pages/`) takes precedence over Next.js's `pages/api/[...]` dynamic routes.
+2. Show how to check for the conflict: look for both `api/` at root and `pages/api/` in the project.
+3. Fix: rename the root-level `api/` directory to something else (e.g., `api_src/` or `backend/`).
+4. For `next-pwa`: show how to disable it temporarily and test the routes.
+5. Cover the diagnostic step — inspect the response headers for `X-Matched-Path` and `X-Matched-Source`.
+6. Include a `vercel.json` test that explicitly maps the dynamic route to rule out Vercel-level routing issues.
+7. Note: this only affects Next.js projects with both a root `api/` directory and `pages/api/` routes.
+
+**Output:** Provide a diagnostic procedure and fix steps for dynamic API route conflicts on Vercel.

@@ -1,0 +1,45 @@
+---
+title: "Deploy a Cloudflare Worker from GitHub Actions"
+slug: "cloudflare-workers-deploy"
+description: "Automate Cloudflare Worker deployments using Wrangler from GitHub Actions — with environment branches, secrets, and preview URLs."
+category: "Deployment"
+tags: ["cloudflare", "workers", "serverless", "wrangler", "github-actions"]
+date: "2026-05-22"
+files: ["wrangler.toml", ".github/workflows/deploy-worker.yml"]
+secrets: ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"]
+repoExample: "cloudflare/workers-sdk"
+repoUrl: "https://github.com/cloudflare/workers-sdk"
+sources:
+  - title: "Cannot deploy Tanstack Start React app to Cloudflare using GitHub Actions"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/79906397/cannot-deploy-tanstack-start-react-app-to-cloudflare-using-github-actions"
+    votes: 1
+  - title: "CI workflow deploying Cloudflare Workers with Wrangler"
+    type: github
+    url: "https://github.com/ngshiheng/atomic-url/blob/main/.github/workflows/ci.yml"
+    repo: "ngshiheng/atomic-url"
+    stars: 63
+  - title: "Cloudflare Workers Continuous Deployment with GitHub Actions"
+    type: devto
+    url: "https://dev.to/kleeut/cloudflare-workers-continuous-deployment-with-github-actions-3jo6"
+    author: "Klee Thomas"
+    reactions: 12
+---
+
+**Context:** You develop a Cloudflare Worker locally with `wrangler dev`, but deploying to production requires manual `wrangler deploy` commands. Preview URLs for PRs don't exist.
+
+**Goal:** Create a GitHub Actions workflow that deploys Workers automatically — production on push to main, preview URLs for PRs, with secrets injected from GitHub secrets.
+
+**Requirements:**
+1. Install Wrangler in CI: `npm i -g wrangler` or use `cloudflare/wrangler-action@v3`.
+2. Configure `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets.
+3. Create a `wrangler.toml` with the Worker name, main entry point, and compatibility date.
+4. For production deploys (push to `main`): run `wrangler deploy` to publish to the production route.
+5. For PR previews: use `wrangler deploy --env preview-{pr-number}` with a separate environment in `wrangler.toml` that has a different route.
+6. Map GitHub secrets to Worker secrets using `echo $SECRET | wrangler secret put MY_SECRET` in the workflow.
+7. Add a `wrangler.json` or `wrangler.toml` section for `routes`, `triggers`, and `cron` triggers.
+8. Create a GitHub Deployment status after deploy so the PR shows a "View Preview" link.
+9. Handle `wrangler deploy` failures: check the deployment status via the Cloudflare API and roll back to the previous version if it fails.
+10. Use `wrangler versions deploy` and `wrangler versions rollback` for safe rollbacks if using Workers with versioning enabled.
+
+**Output:** Provide a `wrangler.toml` configuration and a GitHub Actions workflow with production deploy + PR previews.

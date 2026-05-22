@@ -1,0 +1,37 @@
+---
+title: "Push to a Different Repository from GitHub Actions"
+slug: "github-actions-cross-repo-push"
+description: "Use a PAT or GitHub App instead of GITHUB_TOKEN when a workflow needs to push to or interact with a different repository."
+category: "Security"
+tags: ["github-actions", "permissions", "cross-repo", "pat", "authentication"]
+date: "2026-05-21"
+files: [".github/workflows/ci.yml"]
+secrets: ["PAT_TOKEN"]
+repoExample: "actions/checkout"
+repoUrl: "https://github.com/actions/checkout"
+sources:
+  - title: "Using secrets in GitHub Actions"
+    type: devto
+    url: "https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions"
+    author: "GitHub Docs"
+    reactions: 35
+  - title: "How to automatically request a review from someone using GitHub actions?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/66557514/how-to-automatically-request-a-review-from-someone-using-github-actions"
+    votes: 7
+---
+
+**Context:** A GitHub Actions workflow fails with `remote: Permission to target-org/target-repo.git denied to github-actions[bot]` when trying to push to or checkout a different repository. This happens because `GITHUB_TOKEN` is scoped to the repository running the workflow.
+
+**Goal:** Configure a Personal Access Token (or GitHub App token) stored as a secret and reference it explicitly in `actions/checkout` or push commands for cross-repo operations.
+
+**Requirements:**
+1. Explain why `GITHUB_TOKEN` is repo-scoped and cannot access other repositories.
+2. Create a fine-grained PAT with the minimum permissions for the target repo and store it as a repository secret.
+3. Show how to pass the PAT token to `actions/checkout@v4` via the `token:` field.
+4. Cover both reading (checkout) and writing (push) cross-repo scenarios.
+5. For the push case: show how to set `git remote set-url origin` with the token embedded in the URL.
+6. Warn about SSO authorization if the target repo is in an SSO-enabled org.
+7. Include a troubleshooting step — verify the token scopes via the GitHub API.
+
+**Output:** Provide a workflow snippet that checks out a different repository and pushes changes back using a PAT secret.

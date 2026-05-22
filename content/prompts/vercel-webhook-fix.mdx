@@ -1,0 +1,43 @@
+---
+title: "Work Around Vercel Webhook Failures for Preview Branches"
+slug: "vercel-webhook-fix"
+description: "Handle Vercel webhook delivery failures for non-production branches by triggering deployments via API from a GitHub Actions workflow."
+category: "Deployment"
+tags: ["vercel", "webhook", "preview", "deploy", "github-actions"]
+date: "2026-05-21"
+files: [".github/workflows/deploy-preview.yml"]
+secrets: ["VERCEL_TOKEN"]
+repoExample: "vercel/vercel"
+repoUrl: "https://github.com/vercel/vercel"
+sources:
+  - title: "GitHub Webhook Not Created – Deployments Not Triggering"
+    type: devto
+    url: "https://community.vercel.com/t/github-webhook-not-created-deployments-not-triggering/15935"
+    author: "Vercel Community"
+    reactions: 20
+  - title: "Automate Vercel Preview Deployments with GitHub actions: A Step-by-Step Guide"
+    type: devto
+    url: "https://dev.to/dantonelli/automate-vercel-preview-deployments-with-github-actions-a-step-by-step-guide-38fb"
+    author: "Derya A. Antonelli"
+    reactions: 30
+  - title: "How can I use GitHub Actions with Vercel?"
+    type: devto
+    url: "https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel"
+    author: "Vercel KB"
+    reactions: 50
+---
+
+**Context:** After a Vercel incident, pushes to staging/preview branches no longer trigger deployments, while the production branch (main) still works. The GitHub App shows webhooks being sent, but Vercel doesn't create deployments.
+
+**Goal:** Create a GitHub Actions workflow that manually triggers Vercel deployments via the API when the webhook integration fails for non-production branches.
+
+**Requirements:**
+1. Explain why webhooks can fail: post-incident state, webhook delivery disruption for non-production branches, or GitHub App permission drift.
+2. Create a workflow that triggers on `push` to preview branches (staging, develop, etc.).
+3. Use `curl` to call the Vercel Create Deployment API with the `VERCEL_TOKEN` stored as a secret.
+4. Pass the branch reference via `gitSource.ref` in the API request body.
+5. Show how to extract the `repoId` from the Vercel project settings or API.
+6. Include polling logic to wait for the deployment to finish and report the status back.
+7. Cover the rollback path: add a `workflow_dispatch` trigger to manually redeploy any branch.
+
+**Output:** Provide a GitHub Actions workflow that deploys preview branches via Vercel API and a fallback trigger for manual redeploy.

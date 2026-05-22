@@ -1,0 +1,38 @@
+---
+title: "Pin Vercel Regions to Avoid Global Deployment Failures"
+slug: "vercel-middleware-regions"
+description: "Configure region pinning in vercel.json to prevent Middleware's global deployment requirement from blocking builds when a single region is unhealthy."
+category: "Deployment"
+tags: ["vercel", "middleware", "regions", "edge", "resilience"]
+date: "2026-05-21"
+files: ["vercel.json", "middleware.ts"]
+secrets: []
+repoExample: "vercel/platforms"
+repoUrl: "https://github.com/vercel/platforms"
+sources:
+  - title: "Project Configuration - Vercel"
+    type: devto
+    url: "https://vercel.com/docs/project-configuration"
+    author: "Vercel Docs"
+    reactions: 40
+  - title: "Supported Node.js versions - Vercel"
+    type: devto
+    url: "https://vercel.com/docs/functions/runtimes/node-js/node-js-versions"
+    author: "Vercel Docs"
+    reactions: 25
+---
+
+**Context:** A Next.js project using Middleware (for auth, redirects, A/B testing) fails during the "Deploying outputs" phase when any single Vercel region is unhealthy. Middleware deploys globally by default, making every region a deployment dependency.
+
+**Goal:** Explicitly set the `regions` configuration in `vercel.json` to limit Middleware deployment to healthy regions, and provide a fallback deploy strategy when region outages occur.
+
+**Requirements:**
+1. Configure `"regions"` in `vercel.json` to pin deployments to specific regions (e.g., `["iad1", "sfo1"]`) instead of the global default.
+2. Explain which features force global deployment: Middleware (`middleware.ts`), Edge Functions, `@vercel/edge`.
+3. Provide a diagnostic step to check which regions are currently healthy via Vercel Status API.
+4. Cover the trade-off: region pinning reduces deployment surface but may increase latency for users in unpinned regions.
+5. Include a CI check that validates the middleware can run without global region dependency.
+6. Add a fallback deploy strategy: if the deploy fails with an internal error, check Vercel Status and re-deploy with a reduced region set.
+7. Note when you DON'T need Middleware: simple redirects can be done in `next.config.js` redirects, which don't force global deployment.
+
+**Output:** Provide the `vercel.json` region configuration, a health-check script, and a deployment fallback workflow for region outages.

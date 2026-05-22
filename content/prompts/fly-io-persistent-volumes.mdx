@@ -1,0 +1,34 @@
+---
+title: "Attach Persistent Volumes on Fly.io"
+slug: "fly-io-persistent-volumes"
+description: "Create, attach, and manage Fly Volumes for stateful apps — including volume reattachment on redeploy and backup best practices."
+category: "Deployment"
+tags: ["fly-io", "volumes", "storage", "stateful"]
+date: "2026-05-22"
+files: ["fly.toml"]
+secrets: []
+repoExample: "superfly/fly-launch-app"
+repoUrl: "https://github.com/superfly/fly-launch-app"
+sources:
+  - title: "Fly Volumes overview"
+    type: devto
+    url: "https://fly.io/docs/volumes/overview/"
+    author: "Fly.io Docs"
+    reactions: 25
+---
+
+**Context:** Your Fly.io app needs persistent storage — SQLite databases, user uploads, or cache data that must survive restarts and redeploys. Fly Volumes provide durable block storage attached to individual VMs.
+
+**Goal:** Create a Fly Volume, mount it in the app, handle reattachment after redeployment, and implement a backup strategy.
+
+**Requirements:**
+1. Explain the Fly Volume lifecycle: volumes are tied to a specific app and region, persist across VM restarts, but are deleted when the app is destroyed.
+2. Create a volume using `flyctl volumes create mydata --region iad --size 10`.
+3. Configure `fly.toml` to mount the volume at `/data` using the `[[mounts]]` section with `source` and `destination` paths.
+4. Write a health check that verifies the volume is writable at startup — log a warning if not.
+5. Handle volume reattachment: when you redeploy, Fly re-attaches the volume automatically, but the app must wait for the mount to be ready before writing.
+6. Include a backup script that runs via `flyctl ssh` to tar the volume contents and upload to S3.
+7. Cover multi-region considerations: volumes are region-specific — use `flyctl volumes fork` or app-level replication for cross-region setups.
+8. Warn about the 10GB default volume size limit and how to request more.
+
+**Output:** Provide the `fly.toml` mount configuration and a volume initialization script with health checks and backup steps.

@@ -1,0 +1,42 @@
+---
+title: "Fix Client-Side Routing 404s on Vercel"
+slug: "vercel-client-side-routing"
+description: "Configure vercel.json rewrites to handle SPA routing so refreshing /about or navigating to nested routes doesn't return 404."
+category: "Deployment"
+tags: ["vercel", "spa", "routing", "react-router", "vite"]
+date: "2026-05-21"
+files: ["vercel.json"]
+secrets: []
+repoExample: "reactjs/react.dev"
+repoUrl: "https://github.com/reactjs/react.dev"
+sources:
+  - title: "Vercel Rewrite: SPA Fallback except for API endpoint"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/64920230/vercel-rewrite-spa-fallback-except-for-api-endpoint"
+    votes: 6
+  - title: "How to Fix 404 Error on Vercel with React Router and Client-Side Routing"
+    type: devto
+    url: "https://dev.to/rohantgeorge/how-to-fix-404-error-on-vercel-with-react-router-and-client-side-routing-1n52"
+    author: "Rohan T George"
+    reactions: 5
+  - title: "Vercel Rewrite: SPA Fallback except for API endpoints"
+    type: github
+    url: "https://github.com/vercel/vercel/discussions/5448"
+    repo: "vercel/vercel"
+    stars: 15500
+---
+
+**Context:** A React, Vue, or Svelte SPA deployed to Vercel works fine at the root `/` but returns a 404 when refreshing any client-side route like `/dashboard` or `/settings/profile`.
+
+**Goal:** Configure `vercel.json` with the correct rewrite rules so all paths serve `index.html`, letting the client-side router handle navigation.
+
+**Requirements:**
+1. Write a `vercel.json` rewrite that maps all incoming requests to `/index.html`.
+2. Ensure API routes under `/api/*` are NOT rewritten — they must still reach the serverless functions.
+3. For Vite projects: include the explicit build config so Vercel detects the `dist` directory correctly.
+4. Handle the case where both a static SPA and a serverless API coexist on the same domain.
+5. Cover the `@vercel/static-build` build config with `distDir` for non-framework SPAs.
+6. Include troubleshooting for blank white screens (missing JS/CSS due to incorrect `distDir`).
+7. Note: some frameworks (Next.js, Nuxt) don't need this — only true SPAs using React Router, Vue Router, etc.
+
+**Output:** Provide the `vercel.json` configuration for SPA routing, with variations for Vite, Create React App, and custom build tools.

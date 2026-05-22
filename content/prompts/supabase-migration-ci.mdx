@@ -1,0 +1,43 @@
+---
+title: "Run Supabase Migrations in CI"
+slug: "supabase-migration-ci"
+description: "Automate Supabase database migrations in GitHub Actions — linking to remote projects, running db push, and managing preview branches."
+category: "Database"
+tags: ["supabase", "migration", "ci", "database", "github-actions"]
+date: "2026-05-22"
+files: [".github/workflows/supabase-migrations.yml", "supabase/config.toml"]
+secrets: ["SUPABASE_ACCESS_TOKEN", "SUPABASE_PROJECT_ID"]
+repoExample: "supabase/supabase"
+repoUrl: "https://github.com/supabase/supabase"
+sources:
+  - title: "How do I manage Supabase migrations across main and develop branches using GitHub Actions?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/79838106/how-do-i-manage-supabase-migrations-across-main-and-develop-branches-using-githu"
+  - title: "supabase/supabase-action-example — official Supabase CI example"
+    type: github
+    url: "https://github.com/supabase/supabase-action-example"
+    repo: "supabase/supabase-action-example"
+    stars: 86
+  - title: "Supabase database migrations across multiple environments"
+    type: devto
+    url: "https://dev.to/parth24072001/supabase-managing-database-migrations-across-multiple-environments-local-staging-production-4emg"
+    author: "poshiya parth s"
+---
+
+**Context:** You manage your Supabase schema with local migration files, but applying them to production requires running `supabase db push` manually — and there's no way to test migrations in a separate branch before affecting production.
+
+**Goal:** Create a GitHub Actions workflow that runs Supabase migrations in CI: creates a preview branch database for pull requests, runs migrations against it, and on merge pushes to production.
+
+**Requirements:**
+1. Install the Supabase CLI in the workflow: `npm i -g supabase` or use the script installer.
+2. Link the local project to the remote Supabase project: `supabase link --project-ref $SUPABASE_PROJECT_ID`.
+3. For PRs: create an isolated preview branch using `supabase branches create` with the PR number as the branch name.
+4. Run migrations against the preview branch: `supabase db push --branch pr-{number}`.
+5. On merge to main: run `supabase db push` against the production database.
+6. Seed data into the preview branch for realistic testing: `supabase db seed` or custom seed scripts.
+7. Tear down the preview branch when the PR is closed: `supabase branches delete pr-{number}`.
+8. Handle migration conflicts: check if the local migration matches the remote database state before pushing.
+9. Add a diff step: `supabase db diff` to show what changed before applying.
+10. Store `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_ID` as repository secrets.
+
+**Output:** Provide a GitHub Actions workflow for Supabase migrations with PR preview branches and production deployment.

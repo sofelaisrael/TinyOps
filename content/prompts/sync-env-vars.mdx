@@ -1,0 +1,33 @@
+---
+title: "Sync GitHub Secrets to Vercel"
+slug: "sync-env-vars"
+description: "Generate a script to programmatically sync your GitHub Actions secrets to Vercel Environment Variables."
+category: "Security"
+tags: ["env-vars", "vercel-cli", "security"]
+date: "2026-04-25"
+files: ["scripts/sync-env.sh", ".github/workflows/sync-env.yml"]
+secrets: ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"]
+repoExample: "shadcn-ui/ui"
+repoUrl: "https://github.com/shadcn-ui/ui"
+sources:
+  - title: "Adding github secrets to CI/CD actions to Vercel deployment"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/78794502/adding-github-secrets-to-ci-cd-actions-to-vercel-deployment"
+    votes: 0
+  - title: "How do I use custom env vars running vercel cli on github action?"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/74642125/how-do-i-use-custom-env-vars-running-vercel-cli-on-github-action"
+    votes: 3
+  - title: "Setting multiple environment variables in vercel build step"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/64105318/setting-multiple-environment-variables-in-vercel-build-step"
+    votes: 0
+---
+
+**Context:** I have 15+ environment variables for my Next.js app. Managing them manually in both GitHub Secrets and the Vercel Dashboard is tedious and error-prone.
+**Goal:** Write a Bash script or GitHub Action that syncs specific GitHub Secrets to a Vercel project's Preview and Production environments.
+**Requirements:**
+1. Use the Vercel CLI (`vercel env add` or `vercel env pull/push` logic).
+2. The script should read from a `.env.example` file to know which keys to look for in the GitHub Secrets context.
+3. Automatically apply these variables to both `Preview` and `Production` environments in Vercel.
+**Output:** Provide the Bash script/YAML and instructions on how to safely authenticate the Vercel CLI in GitHub Actions to run this.

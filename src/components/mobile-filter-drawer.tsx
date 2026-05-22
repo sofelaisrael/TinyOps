@@ -1,0 +1,123 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { X, SlidersHorizontal } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { type ReactNode } from "react";
+
+interface MobileFilterDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  platforms: string[];
+  selectedPlatform: string | null;
+  onSelectPlatform: (p: string | null) => void;
+  categories: string[];
+  selectedCategory: string | null;
+  onSelectCategory: (c: string | null) => void;
+  getCategoryIcon: (cat: string) => ReactNode;
+}
+
+export function MobileFilterDrawer({
+  isOpen, onClose,
+  platforms, selectedPlatform, onSelectPlatform,
+  categories, selectedCategory, onSelectCategory,
+  getCategoryIcon,
+}: MobileFilterDrawerProps) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-50 lg:hidden"
+          />
+          <motion.div
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 250 }}
+            className="fixed left-0 top-0 bottom-0 z-50 w-64 bg-[#EDEBE7] border-r border-neutral-200/80 lg:hidden overflow-y-auto"
+          >
+            <div className="flex items-center justify-between px-5 h-14 border-b border-neutral-200/80">
+              <span className="text-[13px] font-semibold text-neutral-700">Filters</span>
+              <button onClick={onClose} className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-white/60 transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-5 space-y-6">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-3">Platform</p>
+                <ul className="space-y-2">
+                  {platforms.map((p) => (
+                    <li key={p}>
+                      <button
+                        onClick={() => { onSelectPlatform(selectedPlatform === p ? null : p); onClose(); }}
+                        className={cn(
+                          "text-[14px] leading-snug transition-colors w-full text-left",
+                          selectedPlatform === p
+                            ? "font-semibold text-neutral-900 underline underline-offset-2"
+                            : "text-neutral-500 hover:text-neutral-900"
+                        )}
+                      >
+                        {p}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-3">Categories</p>
+                <ul className="space-y-2">
+                  <li>
+                    <button
+                      onClick={() => { onSelectCategory(null); onClose(); }}
+                      className={cn(
+                        "text-[14px] leading-snug transition-colors w-full text-left",
+                        !selectedCategory
+                          ? "font-semibold text-neutral-900 underline underline-offset-2"
+                          : "text-neutral-500 hover:text-neutral-900"
+                      )}
+                    >
+                      All
+                    </button>
+                  </li>
+                  {categories.map((cat) => (
+                    <li key={cat}>
+                      <button
+                        onClick={() => { onSelectCategory(selectedCategory === cat ? null : cat); onClose(); }}
+                        className={cn(
+                          "flex items-center gap-2 text-[14px] leading-snug transition-colors w-full text-left capitalize",
+                          selectedCategory === cat
+                            ? "font-semibold text-neutral-900 underline underline-offset-2"
+                            : "text-neutral-500 hover:text-neutral-900"
+                        )}
+                      >
+                        <span className="text-neutral-400">{getCategoryIcon(cat)}</span>
+                        {cat}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+export function MobileFilterButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-neutral-400 hover:text-neutral-800 transition-all"
+    >
+      <SlidersHorizontal className="w-3.5 h-3.5" />
+      <span className="hidden sm:block">Filters</span>
+    </button>
+  );
+}

@@ -1,0 +1,37 @@
+---
+title: "Sync Vercel Edge Config with GitHub"
+slug: "sync-edge-config"
+description: "Manage your feature flags or redirects in a JSON file on GitHub and automatically sync them to Vercel Edge Config."
+category: "Advanced CI/CD"
+tags: ["edge-config", "vercel-api", "automation"]
+date: "2026-04-26"
+files: ["config.json", ".github/workflows/sync-edge.yml"]
+secrets: ["VERCEL_TOKEN", "EDGE_CONFIG_ID", "TEAM_ID"]
+repoExample: "Vercel Edge Config Repo"
+repoUrl: "https://github.com/vercel/edge-config"
+sources:
+  - title: "How to get nested value from @vercel/edge-config"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/77713470/how-to-get-nested-value-from-vercel-edge-config"
+    votes: 1
+  - title: "Vercel SDK — Edge Config API for CRUD operations"
+    type: github
+    url: "https://github.com/vercel/sdk"
+    repo: "vercel/sdk"
+    stars: 153
+  - title: "Zero-Cost Feature Flags Using Vercel Edge Config (No SaaS Needed)"
+    type: devto
+    url: "https://dev.to/hexshift/zero-cost-feature-flags-using-vercel-edge-config-no-saas-needed-394a"
+    author: "HexShift"
+---
+
+**Context:** We use Vercel Edge Config for ultra-low latency feature flags and redirects. We want the "source of truth" to be a JSON file in our GitHub repository to allow for code reviews on configuration changes.
+
+**Goal:** Write a GitHub Action that triggers on pushes to the `main` branch, reads `config.json`, and updates the specified Vercel Edge Config via the Vercel API.
+
+**Requirements:**
+1. Validate the JSON structure before syncing.
+2. Use `curl` or a Node.js script to call the Vercel Edge Config Patch API.
+3. Ensure the `TEAM_ID` is included for Pro/Enterprise teams.
+
+**Output:** Provide the JSON structure example and the GitHub Action steps to sync it.

@@ -1,0 +1,41 @@
+---
+title: "Optimize Vercel Builds with .vercelignore and Config"
+slug: "vercel-build-optimization"
+description: "Speed up Vercel deployments by excluding unnecessary files, pinning the correct Node version, and fixing build commands."
+category: "Performance"
+tags: ["vercel", "build", "optimization", "node", "config"]
+date: "2026-05-21"
+files: [".vercelignore", "vercel.json"]
+secrets: []
+repoExample: "shadcn-ui/ui"
+repoUrl: "https://github.com/shadcn-ui/ui"
+sources:
+  - title: "Optimizing Vercel deployment size and performance for faster loading"
+    type: stackoverflow
+    url: "https://community.vercel.com/t/optimizing-vercel-deployment-size-and-performance-for-faster-loading/34306"
+    votes: 0
+  - title: "How I Cut My Vercel Build Time by 66% (5.5 Minutes to 1 Min 53 Seconds)"
+    type: devto
+    url: "https://zackproser.com/blog/vercel-build-time-optimization"
+    author: "Zack Proser"
+    reactions: 30
+  - title: "Vercel Build Failed — Common Errors and How to Fix Them"
+    type: devto
+    url: "https://www.aimadetools.com/blog/vercel-build-failed-fix/"
+    author: "Aimade Tools"
+    reactions: 15
+---
+
+**Context:** Vercel deployments are slow, fail with generic errors, or the CLI upload stalls at 150MB+. Common causes: `node_modules` getting uploaded, wrong Node version, or custom build commands that conflict with Vercel's install step.
+
+**Goal:** Create a `.vercelignore` and optimized `vercel.json` configuration that reduces upload size, pins the correct Node version, and avoids common build command pitfalls.
+
+**Requirements:**
+1. Write a `.vercelignore` that excludes `node_modules`, `.next`, `.git`, `*.md`, test files, and other non-production artifacts from the deployment upload.
+2. Pin the Node.js version in `vercel.json` to a version Vercel supports (avoid Node 24 — use `20.x`).
+3. Ensure the build command is a single script (`next build` or `vite build`) — NOT `npm i && next build`, since Vercel already runs `npm install` separately.
+4. Handle the case where a root-level `api/` directory conflicts with Next.js Pages Router API routes (rename to `_api` or remove).
+5. Include a pre-deploy check that runs `next build` locally to catch errors before pushing.
+6. Add notes on how to use `vercel deploy --prebuilt --archive=tgz` for very large projects.
+
+**Output:** Provide the `.vercelignore` file, the optimized `vercel.json`, and a pre-flight script that validates the setup.

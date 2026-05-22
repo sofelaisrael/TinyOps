@@ -1,0 +1,38 @@
+---
+title: "Notify Slack on Vercel Deployment Failure"
+slug: "slack-deploy-notification"
+description: "Keep the team informed by sending a rich Slack notification whenever a Vercel deployment fails in GitHub Actions."
+category: "Notifications"
+tags: ["slack", "webhooks", "monitoring"]
+date: "2026-04-27"
+files: [".github/workflows/deploy.yml"]
+secrets: ["SLACK_WEBHOOK_URL", "VERCEL_TOKEN"]
+repoExample: "Dub.co"
+repoUrl: "https://github.com/steven-tey/dub"
+sources:
+  - title: "Customizing Slack notification for GitHub pull requests"
+    type: stackoverflow
+    url: "https://stackoverflow.com/questions/66948900/customizing-slack-notification-for-github-pull-requests"
+    votes: 25
+  - title: "slack-github-action — official Slack GitHub Action"
+    type: github
+    url: "https://github.com/slackapi/slack-github-action"
+    repo: "slackapi/slack-github-action"
+    stars: 1300
+  - title: "action-slack-notify — community Slack notification action"
+    type: github
+    url: "https://github.com/rtCamp/action-slack-notify"
+    repo: "rtCamp/action-slack-notify"
+    stars: 1200
+---
+
+**Context:** We use GitHub Actions to trigger Vercel deployments. If the build or deployment fails, we want an immediate notification in our `#ops` Slack channel so we can investigate without checking the GitHub tab.
+
+**Goal:** Integrate a Slack notification step into an existing Vercel deployment workflow that only triggers on failure.
+
+**Requirements:**
+1. Use `slack-send` action or a simple `curl` to a webhook.
+2. Include the PR title, the author, and a direct link to the Vercel build logs.
+3. Use conditional `if: failure()` to ensure it doesn't fire on success.
+
+**Output:** Provide the specific step configuration to be added to the deployment job.

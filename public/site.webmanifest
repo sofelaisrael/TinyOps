@@ -1,0 +1,17 @@
+{
+  "name": "TinyOps",
+  "short_name": "TinyOps",
+  "description": "Production-grade CI/CD workflows for Vercel + GitHub Actions",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EDEBE7",
+  "theme_color": "#EDEBE7",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
