@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PromptPageProps) {
   const prompts = getAllPrompts();
   const prompt = prompts.find((p) => p.slug === slug);
   if (!prompt) return { title: 'Prompt Not Found - TinyOps' };
-  const canonicalUrl = `https://tinyops.dev/prompt/${prompt.slug}`;
+  const canonicalUrl = `https://tinyops.vercel.app/prompt/${prompt.slug}`;
   return {
     title: `${prompt.title} - TinyOps`,
     description: prompt.description,
@@ -31,13 +31,13 @@ export async function generateMetadata({ params }: PromptPageProps) {
       type: 'article',
       publishedTime: prompt.date,
       authors: ['TinyOps'],
-      images: [{ url: `https://tinyops.dev/api/og?slug=${prompt.slug}`, width: 1200, height: 630, alt: prompt.title }],
+      images: [{ url: `https://tinyops.vercel.app/api/og?slug=${prompt.slug}`, width: 1200, height: 630, alt: prompt.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: prompt.title,
       description: prompt.description,
-      images: [`https://tinyops.dev/api/og?slug=${prompt.slug}`],
+      images: [`https://tinyops.vercel.app/api/og?slug=${prompt.slug}`],
     },
     other: {
       'og:article:section': prompt.category,

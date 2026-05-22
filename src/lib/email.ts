@@ -18,7 +18,7 @@ type SendEmailParams = {
 };
 
 export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
-  const fromName = process.env.FROM_NAME || "TinyOps Dev";
+  const fromName = process.env.FROM_NAME || "TinyOps Dev Team";
   const from = `${fromName} <${process.env.SMTP_USER}>`;
 
   return transporter.sendMail({ from, to, subject, text, html });

@@ -253,26 +253,6 @@ function HomeContent() {
         </div>
       </nav>
 
-      {/* ── Banner ── */}
-      <section className="max-w-[1200px] mx-auto px-6 pt-14 pb-6 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white border border-neutral-200 shadow-sm mb-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-neutral-700">
-            <rect width="16" height="12" x="4" y="8" rx="2" />
-            <path d="M12 8V4H8" />
-            <path d="M2 14h2" />
-            <path d="M20 14h2" />
-            <path d="M15 13v2" />
-            <path d="M9 13v2" />
-          </svg>
-        </div>
-        <h2 className="font-display font-black uppercase text-neutral-900 leading-none tracking-tight mb-3" style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>
-          Production CI/CD Prompts
-        </h2>
-        <p className="text-neutral-500 text-[15px] max-w-lg mx-auto">
-          Battle-tested workflows for Vercel &amp; GitHub Actions. Copy, deploy, ship.
-        </p>
-      </section>
-
       {/* ── Body: sidebar + main ── */}
       <div className="max-w-[1200px] mx-auto px-6 flex gap-10 pt-6 pb-20">
 
@@ -611,6 +591,9 @@ function HomeContent() {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
         getCategoryIcon={getCategoryIcon}
+        recentlyViewedPrompts={recentlyViewedPrompts}
+        favoritedPrompts={favoritedPrompts}
+        favorites={favorites}
       />
     </div>
   );

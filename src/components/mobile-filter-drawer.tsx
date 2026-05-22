@@ -1,9 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, SlidersHorizontal } from "lucide-react";
+import { X, SlidersHorizontal, Heart, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
+import Link from "next/link";
+import { type Prompt } from "@/lib/mdx";
 
 interface MobileFilterDrawerProps {
   isOpen: boolean;
@@ -15,6 +17,9 @@ interface MobileFilterDrawerProps {
   selectedCategory: string | null;
   onSelectCategory: (c: string | null) => void;
   getCategoryIcon: (cat: string) => ReactNode;
+  recentlyViewedPrompts: Prompt[];
+  favoritedPrompts: Prompt[];
+  favorites: string[];
 }
 
 export function MobileFilterDrawer({
@@ -22,6 +27,7 @@ export function MobileFilterDrawer({
   platforms, selectedPlatform, onSelectPlatform,
   categories, selectedCategory, onSelectCategory,
   getCategoryIcon,
+  recentlyViewedPrompts, favoritedPrompts, favorites,
 }: MobileFilterDrawerProps) {
   return (
     <AnimatePresence>
@@ -102,6 +108,61 @@ export function MobileFilterDrawer({
                   ))}
                 </ul>
               </div>
+
+              {recentlyViewedPrompts.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-1.5">
+                    <Clock className="w-3 h-3" />
+                    Recently Viewed
+                  </p>
+                  <ul className="space-y-2">
+                    {recentlyViewedPrompts.map((p) => (
+                      <li key={p.slug}>
+                        <Link
+                          href={`/prompt/${p.slug}`}
+                          onClick={onClose}
+                          className="text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors line-clamp-1"
+                        >
+                          {p.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {favoritedPrompts.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-1.5">
+                    <Heart className="w-3 h-3" />
+                    Favorites
+                  </p>
+                  <ul className="space-y-2">
+                    {favoritedPrompts.map((p) => (
+                      <li key={p.slug}>
+                        <Link
+                          href={`/prompt/${p.slug}`}
+                          onClick={onClose}
+                          className="text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors line-clamp-1"
+                        >
+                          {p.title}
+                        </Link>
+                      </li>
+                    ))}
+                    {favorites.length > 5 && (
+                      <li>
+                        <Link
+                          href="/favorites"
+                          onClick={onClose}
+                          className="text-[12px] text-neutral-400 hover:text-neutral-700 transition-colors underline underline-offset-2"
+                        >
+                          View all {favorites.length}
+                        </Link>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </div>
           </motion.div>
         </>

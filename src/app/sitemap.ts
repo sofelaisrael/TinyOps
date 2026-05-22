@@ -1,6 +1,6 @@
 import { getAllPrompts } from '@/lib/mdx';
 
-const baseUrl = 'https://tinyops.dev';
+const baseUrl = 'https://tinyops.vercel.app';
 
 export default async function sitemap() {
   const prompts = getAllPrompts();

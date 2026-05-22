@@ -156,7 +156,7 @@ export function PreviewModal({ prompt, isOpen, onClose, onShare }: { prompt: Pro
 export function ShareModal({ isOpen, onClose, prompt }: { isOpen: boolean; onClose: () => void, prompt?: Prompt | null }) {
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const url = typeof window !== 'undefined' ? `${window.location.origin}/prompt/${prompt?.slug || ''}` : 'https://tinyops.dev';
+  const url = typeof window !== 'undefined' ? `${window.location.origin}/prompt/${prompt?.slug || ''}` : 'https://tinyops.vercel.app';
 
   const copyLink = () => {
     navigator.clipboard.writeText(url);

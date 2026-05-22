@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex gap-8 text-[13px] text-neutral-400">
           <a href="https://github.com/yourusername/tinyops" target="_blank" className="hover:text-neutral-700 transition-colors">GitHub</a>
           <a href="https://x.com/yourhandle" target="_blank" className="hover:text-neutral-700 transition-colors">Twitter</a>
-          <a href="mailto:hello@tinyops.dev" className="hover:text-neutral-700 transition-colors">Contact</a>
+          <a href="mailto:sofelaisrael3@gmail.com" className="hover:text-neutral-700 transition-colors">Contact</a>
         </div>
       </div>
     </footer>

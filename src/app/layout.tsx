@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const baseUrl = "https://tinyops.dev";
+const baseUrl = "https://tinyops.vercel.app";
 
 export const metadata: Metadata = {
   title: { default: "TinyOps | CI/CD Prompt Library", template: "%s | TinyOps" },
