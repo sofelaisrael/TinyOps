@@ -1,25 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
-import fs from "fs";
-
-const SUBSCRIBERS_PATH = "/tmp/tinyops-subscribers.json";
-
-function getSubscribers(): string[] {
-  try {
-    if (fs.existsSync(SUBSCRIBERS_PATH)) {
-      return JSON.parse(fs.readFileSync(SUBSCRIBERS_PATH, "utf8"));
-    }
-  } catch {}
-  return [];
-}
-
-function saveSubscriber(email: string) {
-  const subs = getSubscribers();
-  if (!subs.includes(email)) {
-    subs.push(email);
-    fs.writeFileSync(SUBSCRIBERS_PATH, JSON.stringify(subs, null, 2));
-  }
-}
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -29,12 +10,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
 
-    const subscribers = getSubscribers();
-    if (subscribers.includes(email)) {
+    const { data: existing } = await supabase
+      .from("subscribers")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (existing) {
       return NextResponse.json({ error: "Already subscribed" }, { status: 409 });
     }
 
-    saveSubscriber(email);
+    const { error: insertError } = await supabase
+      .from("subscribers")
+      .insert({ email });
+
+    if (insertError) {
+      if (insertError.code === "23505") {
+        return NextResponse.json({ error: "Already subscribed" }, { status: 409 });
+      }
+      return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 });
+    }
 
     await Promise.all([
       sendEmail({

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -7,6 +8,14 @@ export async function POST(req: Request) {
 
     if (!title?.trim()) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    }
+
+    const { error: insertError } = await supabase
+      .from("suggestions")
+      .insert({ title, description, category, name, email });
+
+    if (insertError) {
+      return NextResponse.json({ error: "Failed to submit suggestion" }, { status: 500 });
     }
 
     const text = [
