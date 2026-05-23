@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
 
-    const { data: existing } = await supabase
+    const { data: existing, error: selectError } = await supabase
       .from("subscribers")
       .select("id")
       .eq("email", email)
@@ -20,15 +20,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Already subscribed" }, { status: 409 });
     }
 
+    if (selectError) {
+      return NextResponse.json({ error: `Select error: ${selectError.message}` }, { status: 500 });
+    }
+
     const { error: insertError } = await supabase
       .from("subscribers")
       .insert({ email });
 
     if (insertError) {
-      if (insertError.code === "23505") {
-        return NextResponse.json({ error: "Already subscribed" }, { status: 409 });
-      }
-      return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 });
+      const msg =
+        insertError.code === "23505"
+          ? "Already subscribed"
+          : `Insert error (${insertError.code}): ${insertError.message}`;
+      return NextResponse.json({ error: msg }, { status: 409 });
     }
 
     await Promise.all([

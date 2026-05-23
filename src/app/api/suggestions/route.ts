@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       .insert({ title, description, category, name, email });
 
     if (insertError) {
-      return NextResponse.json({ error: "Failed to submit suggestion" }, { status: 500 });
+      return NextResponse.json({ error: `Insert error (${insertError.code}): ${insertError.message}` }, { status: 500 });
     }
 
     const text = [
