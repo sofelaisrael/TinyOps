@@ -190,7 +190,7 @@ function HomeContent() {
           <Logo />
 
           {/* Search — centred */}
-          <div className="flex-1 flex justify-center px-4">
+          <div className="flex-1 flex justify-center px-2 sm:px-4 min-w-0">
             <div className="relative w-full max-w-[520px]">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
               <input
@@ -218,13 +218,13 @@ function HomeContent() {
           </div>
 
           {/* Right actions */}
-          <div className="flex-shrink-0 flex items-center gap-2">
+          <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2">
             <MobileFilterButton onClick={() => setIsMobileFiltersOpen(true)} />
 
             <Link
               href="/favorites"
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all",
+                "flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border text-[13px] font-medium transition-all",
                 favorites.length > 0
                   ? "border-rose-300 text-rose-600 bg-rose-50 hover:bg-rose-100"
                   : "border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:text-neutral-800"
@@ -236,7 +236,7 @@ function HomeContent() {
 
             <button
               onClick={() => setIsSuggestModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50 transition-all"
+              className="hidden sm:flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50 transition-all"
             >
               <Lightbulb className="w-3.5 h-3.5" />
               <span className="hidden sm:block">Suggest</span>
