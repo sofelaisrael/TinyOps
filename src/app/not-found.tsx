@@ -1,44 +1,15 @@
 import Link from "next/link";
-import fs from "fs";
-import path from "path";
-
-function loadSvg(filePath: string): string {
-  try {
-    const full = path.join(process.cwd(), "public", "illustrations", filePath);
-    if (!fs.existsSync(full)) return "";
-    let svg = fs.readFileSync(full, "utf8");
-    const start = svg.indexOf("<svg");
-    const end = svg.indexOf("</svg>") + 6;
-    if (start === -1 || end <= start) return "";
-    svg = svg.slice(start, end);
-    const defsStart = svg.indexOf("<defs>");
-    const defsEnd = svg.indexOf("</defs>") + 7;
-    if (defsStart !== -1 && defsEnd > defsStart) {
-      svg = svg.slice(0, defsStart) + svg.slice(defsEnd);
-    }
-    return svg;
-  } catch {
-    return "";
-  }
-}
 
 export default function NotFound() {
-  const astronautSvg = loadSvg("astronaut.svg");
-
   return (
     <div className="min-h-screen bg-[#EDEBE7] flex items-center justify-center px-4">
       <div className="max-w-3xl mx-auto text-center">
         <div className="mb-6">
-          {astronautSvg ? (
-            <div
-              dangerouslySetInnerHTML={{ __html: astronautSvg }}
-              className="h-72 mx-auto object-contain mb-4"
-            />
-          ) : (
-            <div className="h-72 w-72 mx-auto bg-neutral-100 rounded-2xl flex items-center justify-center mb-4">
-              <span className="text-8xl font-black text-neutral-300">?</span>
-            </div>
-          )}
+          <img
+            src="/images/nudge-404.webp"
+            alt="404 illustration"
+            className="h-72 mx-auto object-contain mb-4"
+          />
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl tracking-tight font-bold text-neutral-900 mb-6 text-balance">
