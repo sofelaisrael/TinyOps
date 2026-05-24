@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { RefreshCw, Home } from 'lucide-react';
 
 export default function GlobalError({
   error,
@@ -19,40 +19,46 @@ export default function GlobalError({
       <body className="bg-[#EDEBE7] text-neutral-900 min-h-screen antialiased">
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="text-center max-w-md w-full">
-            <div className="mx-auto w-20 h-20 bg-white border border-neutral-200 rounded-2xl flex items-center justify-center mb-6 shadow-md">
-              <AlertTriangle className="w-10 h-10 text-neutral-400" />
+            <div className="relative mb-8 inline-block">
+              <div className="absolute -top-3 -left-3 w-full h-full bg-neutral-200 rounded-[2rem] -rotate-3" />
+              <div className="absolute -bottom-1 -right-1 w-full h-full bg-neutral-300/50 rounded-[2rem] rotate-2" />
+              <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-neutral-200/80">
+                <div className="w-20 h-20 mx-auto bg-[#EDEBE7] rounded-full flex items-center justify-center">
+                  <span className="text-5xl font-black text-neutral-400">!</span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-3xl font-bold text-neutral-900 mb-4">
-              Oops! Something broke
+            <h1 className="text-3xl font-bold text-neutral-900 mb-4 leading-tight">
+              Oops! Something<br />
+              <span className="text-neutral-500">went wrong</span>
             </h1>
 
-            <p className="text-neutral-500 mb-8 text-lg">
+            <p className="text-neutral-500 text-sm mb-8 max-w-xs mx-auto">
               We&apos;re experiencing technical difficulties. Our team has been alerted and is working on a fix.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <button
                 onClick={reset}
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-all active:scale-[0.97] shadow-md"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-all active:scale-[0.97] shadow-md"
               >
-                <RefreshCw className="w-5 h-5" />
+                <RefreshCw className="w-4 h-4" />
                 Retry
               </button>
 
               <a
                 href="/"
-                className="flex items-center justify-center gap-2 px-8 py-4 border border-neutral-300 text-neutral-600 font-semibold rounded-xl hover:border-neutral-400 hover:text-neutral-900 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-neutral-300 text-neutral-600 font-semibold rounded-xl hover:border-neutral-400 hover:text-neutral-900 transition-all"
               >
-                <Home className="w-5 h-5" />
+                <Home className="w-4 h-4" />
                 Home
               </a>
             </div>
 
             <div className="text-left space-y-4">
               <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                <h3 className="text-sm font-mono text-neutral-500 mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-neutral-300 rounded-full"></span>
+                <h3 className="text-sm font-semibold text-neutral-500 mb-2">
                   What happened?
                 </h3>
                 <p className="text-sm text-neutral-600">
@@ -61,8 +67,7 @@ export default function GlobalError({
               </div>
 
               <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
-                <h3 className="text-sm font-mono text-neutral-500 mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                <h3 className="text-sm font-semibold text-neutral-500 mb-2">
                   What can you do?
                 </h3>
                 <ul className="text-sm text-neutral-600 space-y-1">
@@ -76,31 +81,23 @@ export default function GlobalError({
 
             {process.env.NODE_ENV === 'development' && (
               <div className="mt-8 p-4 bg-white border border-neutral-200 rounded-xl text-left shadow-sm">
-                <h3 className="text-xs font-mono text-neutral-500 mb-3 uppercase tracking-wider">
-                  Developer Information
-                </h3>
-                <div className="space-y-2">
-                  <p className="text-xs font-mono text-neutral-600">
-                    <span className="text-neutral-400">Error:</span> {error.message}
+                <p className="text-xs font-mono text-neutral-600">
+                  <span className="text-neutral-400">Error:</span> {error.message}
+                </p>
+                {error.digest && (
+                  <p className="text-xs font-mono text-neutral-600 mt-2">
+                    <span className="text-neutral-400">Digest:</span> {error.digest}
                   </p>
-                  {error.digest && (
-                    <p className="text-xs font-mono text-neutral-600">
-                      <span className="text-neutral-400">Digest:</span> {error.digest}
-                    </p>
-                  )}
-                  <p className="text-xs font-mono text-neutral-600">
-                    <span className="text-neutral-400">Stack:</span>
-                  </p>
-                  <pre className="text-[10px] font-mono text-neutral-500 mt-1 overflow-x-auto max-w-full">
-                    {error.stack?.split('\n').slice(0, 5).join('\n') || 'No stack trace available'}
-                  </pre>
-                </div>
+                )}
+                <pre className="text-[10px] font-mono text-neutral-500 mt-2 overflow-x-auto max-w-full">
+                  {error.stack?.split('\n').slice(0, 5).join('\n') || 'No stack trace available'}
+                </pre>
               </div>
             )}
 
             <div className="mt-8 pt-8 border-t border-neutral-200">
               <p className="text-xs text-neutral-400">
-                If the problem persists, please{' '}
+                If the problem persists,{' '}
                 <a href="https://github.com/syntax-devv/TinyOps/issues"
                    target="_blank"
                    rel="noopener noreferrer"
