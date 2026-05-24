@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, X, Command as CommandIcon, Heart,
-  Zap, GitBranch, Shield, ShieldCheck, Database, Bell, Layers, Gauge, Bug, Lightbulb,
+  Zap, GitBranch, Shield, ShieldCheck, Database, Bell, Layers, Gauge, Bug, Bot,
   Wrench, Settings, Receipt, Terminal,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
@@ -236,9 +236,9 @@ function HomeContent() {
 
             <button
               onClick={() => setIsSuggestModalOpen(true)}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50 transition-all"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full bg-neutral-900 text-white text-[13px] font-medium hover:bg-neutral-700 transition-all"
             >
-              <Lightbulb className="w-3.5 h-3.5" />
+              <Bot className="w-3.5 h-3.5" />
               <span className="hidden sm:block">Suggest</span>
             </button>
 

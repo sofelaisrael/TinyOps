@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Lightbulb, Sparkles, ChevronDown, Check } from "lucide-react";
+import { X, Send, Bot, ChevronDown, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -62,7 +62,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
 
       toast.success("Prompt suggestion submitted!", {
         description: "Thank you! Your suggestion has been received and will be reviewed.",
-        icon: <Lightbulb className="w-4 h-4 text-amber-500" />
+        icon: <Bot className="w-4 h-4 text-neutral-900" />
       });
 
       setTitle("");
@@ -104,16 +104,14 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative bg-gradient-to-br from-neutral-50 to-white px-6 pt-6 pb-5 border-b border-neutral-100">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-100/40 to-transparent rounded-full -translate-y-1/2 translate-x-1/4" />
                 <div className="flex items-center justify-between relative">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-sm shadow-amber-200/50">
-                      <Lightbulb className="w-5.5 h-5.5 text-white" />
+                    <div className="w-11 h-11 rounded-xl bg-neutral-900 flex items-center justify-center">
+                      <Bot className="w-5.5 h-5.5 text-white" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
                         Suggest a Prompt
-                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                       </h2>
                       <p className="text-sm text-neutral-500">Got an idea for a new prompt?</p>
                     </div>
