@@ -560,7 +560,7 @@ function HomeContent() {
               />
               <button
                 type="submit"
-                className="flex items-center justify-center px-6 py-3 bg-neutral-900 hover:bg-neutral-700 text-white text-sm font-semibold transition-all active:scale-[0.97] shrink-0"
+                className="flex items-center justify-center px-2 py-3 bg-neutral-900 hover:bg-neutral-700 text-white text-sm font-semibold transition-all active:scale-[0.97] shrink-0"
               >
                 Subscribe
               </button>
