@@ -199,7 +199,7 @@ function HomeContent() {
                 placeholder="Search automation prompts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-pill w-full bg-white rounded-full border border-neutral-200 text-[13px] text-neutral-800 placeholder:text-neutral-400 pl-10 pr-10 py-2.5 transition-shadow"
+                className="search-pill w-full bg-white rounded-full border border-neutral-200 text-[13px] leading-tight text-neutral-800 placeholder:text-neutral-400 pl-10 pr-10 py-2.5 transition-shadow"
               />
               <AnimatePresence>
                 {searchQuery && (
@@ -236,7 +236,7 @@ function HomeContent() {
 
             <button
               onClick={() => setIsSuggestModalOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50 transition-all"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-neutral-300 text-neutral-600 text-[13px] font-medium hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50 transition-all"
             >
               <Lightbulb className="w-3.5 h-3.5" />
               <span className="hidden sm:block">Suggest</span>
