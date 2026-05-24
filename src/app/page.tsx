@@ -195,7 +195,7 @@ function HomeContent() {
           <Logo />
 
           {/* Search — centred */}
-          <div className="flex-1 flex justify-center px-2 sm:px-4 min-w-0">
+          <div className="hidden md:flex flex-1 justify-center px-2 sm:px-4 min-w-0">
             <div className="relative w-full max-w-[520px]">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
               <input
@@ -548,7 +548,7 @@ function HomeContent() {
                 toast.error("Subscription failed", { description: "Please try again later." });
               }
             }}
-            className="flex max-w-md mx-auto"
+            className="flex max-w-xs sm:max-w-md mx-auto"
           >
             <input
               name="email"
@@ -584,6 +584,8 @@ function HomeContent() {
         recentlyViewedPrompts={recentlyViewedPrompts}
         favoritedPrompts={favoritedPrompts}
         favorites={favorites}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
     </div>
   );

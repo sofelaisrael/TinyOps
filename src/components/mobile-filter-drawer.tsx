@@ -1,9 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, SlidersHorizontal, Heart, Clock } from "lucide-react";
+import { X, SlidersHorizontal, Heart, Clock, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type ReactNode } from "react";
+import { type ReactNode, useRef, useEffect } from "react";
 import Link from "next/link";
 import { type Prompt } from "@/lib/mdx";
 
@@ -20,6 +20,8 @@ interface MobileFilterDrawerProps {
   recentlyViewedPrompts: Prompt[];
   favoritedPrompts: Prompt[];
   favorites: string[];
+  searchQuery?: string;
+  onSearchChange?: (q: string) => void;
 }
 
 export function MobileFilterDrawer({
@@ -28,7 +30,16 @@ export function MobileFilterDrawer({
   categories, selectedCategory, onSelectCategory,
   getCategoryIcon,
   recentlyViewedPrompts, favoritedPrompts, favorites,
+  searchQuery, onSearchChange,
 }: MobileFilterDrawerProps) {
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => searchRef.current?.focus(), 300);
+    }
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -45,7 +56,7 @@ export function MobileFilterDrawer({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 250 }}
-            className="fixed left-0 top-0 bottom-0 z-50 w-64 bg-[#EDEBE7] border-r border-neutral-200/80 lg:hidden overflow-y-auto"
+            className="fixed left-0 top-0 bottom-0 z-50 w-72 bg-[#EDEBE7] border-r border-neutral-200/80 lg:hidden overflow-y-auto"
           >
             <div className="flex items-center justify-between px-5 h-14 border-b border-neutral-200/80">
               <span className="text-[13px] font-semibold text-neutral-700">Filters</span>
@@ -53,6 +64,21 @@ export function MobileFilterDrawer({
                 <X className="w-4 h-4" />
               </button>
             </div>
+
+            <div className="px-4 pt-4 pb-2 border-b border-neutral-200/80">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                <input
+                  ref={searchRef}
+                  type="text"
+                  placeholder="Search prompts..."
+                  value={searchQuery || ""}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
+                  className="w-full bg-white border border-neutral-200 rounded-lg text-[13px] text-neutral-800 placeholder:text-neutral-400 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-300 transition-all"
+                />
+              </div>
+            </div>
+
             <div className="p-5 space-y-6">
               <div>
                 <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-3">Platform</p>
