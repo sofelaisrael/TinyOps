@@ -103,14 +103,14 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
               className="bg-white border border-neutral-200 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative bg-gradient-to-br from-neutral-50 to-white px-6 pt-6 pb-5 border-b border-neutral-100">
-                <div className="flex items-center justify-between relative">
+              <div className="px-6 pt-6 pb-5 border-b border-neutral-100">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-neutral-900 flex items-center justify-center">
+                    <div className="w-11 h-11 rounded-full bg-neutral-900 flex items-center justify-center">
                       <BotMessageSquare className="w-5.5 h-5.5 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
+                      <h2 className="text-lg font-bold text-neutral-900">
                         Suggest a Prompt
                       </h2>
                       <p className="text-sm text-neutral-500">Got an idea for a new prompt?</p>
@@ -118,14 +118,14 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                   </div>
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-white/80 transition-colors"
+                    className="p-2 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <form onSubmit={handleSubmit} className="p-6 space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1.5">
                     Prompt Title
@@ -135,7 +135,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Multi-Environment Deployments"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all text-[14px]"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-full px-5 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-300/40 focus:border-neutral-300 transition-all text-[14px]"
                   />
                 </div>
 
@@ -146,7 +146,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                   <button
                     type="button"
                     onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                    className="w-full flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-[14px] text-left focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all"
+                    className="w-full flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded-full px-5 py-2.5 text-[14px] text-left focus:outline-none focus:ring-2 focus:ring-neutral-300/40 focus:border-neutral-300 transition-all"
                   >
                     <span className={category ? "text-neutral-900" : "text-neutral-400"}>
                       {category || "Select a category..."}
@@ -170,7 +170,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                             className="w-full flex items-center justify-between px-4 py-2.5 text-[14px] text-neutral-700 hover:bg-neutral-50 transition-colors text-left"
                           >
                             {cat}
-                            {category === cat && <Check className="w-4 h-4 text-amber-500" />}
+                            {category === cat && <Check className="w-4 h-4 text-neutral-900" />}
                           </button>
                         ))}
                       </motion.div>
@@ -187,7 +187,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com (optional)"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all text-[14px]"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-full px-5 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-300/40 focus:border-neutral-300 transition-all text-[14px]"
                   />
                 </div>
 
@@ -200,15 +200,15 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe what this prompt should help users accomplish..."
                     rows={4}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all resize-none text-[14px]"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-5 py-2.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-300/40 focus:border-neutral-300 transition-all resize-none text-[14px]"
                   />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                   >
                     {isSubmitting ? (
                       <>

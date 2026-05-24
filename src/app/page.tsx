@@ -223,7 +223,7 @@ function HomeContent() {
           </div>
 
           {/* Right actions */}
-          <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2">
+          <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 ml-auto">
             <MobileFilterButton onClick={() => setIsMobileFiltersOpen(true)} />
 
             <Link
@@ -244,7 +244,7 @@ function HomeContent() {
               className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full bg-neutral-900 text-white text-[13px] font-medium hover:bg-neutral-700 transition-all"
             >
               <BotMessageSquare className="w-3.5 h-3.5" />
-              <span className="hidden sm:block">Suggest</span>
+              <span>Suggest</span>
             </button>
 
             <button
@@ -550,19 +550,21 @@ function HomeContent() {
             }}
             className="flex max-w-xs sm:max-w-md mx-auto"
           >
-            <input
-              name="email"
-              type="email"
-              required
-              placeholder="you@company.com"
-              className="flex-1 bg-white border border-neutral-300 border-r-0 text-neutral-800 text-sm px-5 py-3 rounded-l-full focus:outline-none focus:ring-2 focus:ring-neutral-300 placeholder:text-neutral-400 transition-all"
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 bg-neutral-900 hover:bg-neutral-700 text-white text-sm font-semibold rounded-r-full transition-all active:scale-[0.97]"
-            >
-              Subscribe
-            </button>
+            <div className="flex flex-1 bg-white border border-neutral-300 rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-neutral-300 transition-all">
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="you@company.com"
+                className="flex-1 bg-transparent text-neutral-800 text-sm px-5 py-3 focus:outline-none placeholder:text-neutral-400 border-0"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-neutral-900 hover:bg-neutral-700 text-white text-sm font-semibold transition-all active:scale-[0.97] shrink-0"
+              >
+                Subscribe
+              </button>
+            </div>
           </form>
         </div>
       </section>
