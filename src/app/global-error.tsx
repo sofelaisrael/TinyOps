@@ -18,51 +18,46 @@ export default function GlobalError({
     <html lang="en">
       <body className="bg-[#EDEBE7] text-neutral-900 min-h-screen antialiased">
         <div className="min-h-screen flex items-center justify-center px-4">
-          <div className="text-center max-w-md w-full">
-            <div className="relative mb-8 inline-block">
-              <div className="absolute -top-3 -left-3 w-full h-full bg-neutral-200 rounded-[2rem] -rotate-3" />
-              <div className="absolute -bottom-1 -right-1 w-full h-full bg-neutral-300/50 rounded-[2rem] rotate-2" />
-              <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-neutral-200/80">
-                <div className="w-20 h-20 mx-auto bg-[#EDEBE7] rounded-full flex items-center justify-center">
-                  <span className="text-5xl font-black text-neutral-400">!</span>
-                </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="mb-6">
+              <div className="h-48 w-48 mx-auto bg-white rounded-2xl flex items-center justify-center border border-neutral-200/80 shadow-sm">
+                <span className="text-7xl font-black text-neutral-400">!</span>
               </div>
             </div>
 
-            <h1 className="text-3xl font-bold text-neutral-900 mb-4 leading-tight">
-              Oops! Something<br />
-              <span className="text-neutral-500">went wrong</span>
+            <h1 className="text-4xl md:text-5xl tracking-tight font-bold text-neutral-900 mb-4 text-balance">
+              Oops! Something broke
             </h1>
 
-            <p className="text-neutral-500 text-sm mb-8 max-w-xs mx-auto">
+            <p className="text-lg md:text-xl text-neutral-600 text-balance mb-8">
               We&apos;re experiencing technical difficulties. Our team has been alerted and is working on a fix.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <button
                 onClick={reset}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-all active:scale-[0.97] shadow-md"
+                className="cursor-pointer inline-flex items-center justify-center font-medium transition-all px-6 py-3 bg-neutral-900 text-white rounded-full hover:bg-neutral-700 active:scale-95 text-base"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4 mr-2" />
                 Retry
               </button>
 
               <a
                 href="/"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-neutral-300 text-neutral-600 font-semibold rounded-xl hover:border-neutral-400 hover:text-neutral-900 transition-all"
+                className="cursor-pointer inline-flex items-center justify-center font-medium transition-all px-6 py-3 bg-neutral-200 text-neutral-900 rounded-full hover:bg-neutral-900 hover:text-white active:scale-95 text-base"
               >
-                <Home className="w-4 h-4" />
+                <Home className="w-4 h-4 mr-2" />
                 Home
               </a>
             </div>
 
-            <div className="text-left space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto mb-12 text-left">
               <div className="p-4 bg-white border border-neutral-200 rounded-xl shadow-sm">
                 <h3 className="text-sm font-semibold text-neutral-500 mb-2">
                   What happened?
                 </h3>
                 <p className="text-sm text-neutral-600">
-                  An unexpected error occurred while loading the application. This is usually temporary.
+                  An unexpected error occurred. This is usually temporary.
                 </p>
               </div>
 
@@ -71,16 +66,16 @@ export default function GlobalError({
                   What can you do?
                 </h3>
                 <ul className="text-sm text-neutral-600 space-y-1">
-                  <li>&bull; Try refreshing the page</li>
-                  <li>&bull; Clear your browser cache</li>
-                  <li>&bull; Check your internet connection</li>
-                  <li>&bull; Come back in a few minutes</li>
+                  <li>&bull; Try refreshing</li>
+                  <li>&bull; Clear your cache</li>
+                  <li>&bull; Check your connection</li>
+                  <li>&bull; Come back later</li>
                 </ul>
               </div>
             </div>
 
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-8 p-4 bg-white border border-neutral-200 rounded-xl text-left shadow-sm">
+              <div className="p-4 bg-white border border-neutral-200 rounded-xl text-left shadow-sm max-w-md mx-auto mb-8">
                 <p className="text-xs font-mono text-neutral-600">
                   <span className="text-neutral-400">Error:</span> {error.message}
                 </p>
@@ -95,7 +90,7 @@ export default function GlobalError({
               </div>
             )}
 
-            <div className="mt-8 pt-8 border-t border-neutral-200">
+            <div className="pt-8 border-t border-neutral-200 max-w-md mx-auto">
               <p className="text-xs text-neutral-400">
                 If the problem persists,{' '}
                 <a href="https://github.com/syntax-devv/TinyOps/issues"

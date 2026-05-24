@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Rocket, ArrowLeft, ExternalLink } from "lucide-react";
 import fs from "fs";
 import path from "path";
 
@@ -28,68 +27,71 @@ export default function NotFound() {
 
   return (
     <div className="min-h-screen bg-[#EDEBE7] flex items-center justify-center px-4">
-      <div className="text-center max-w-lg">
-        <div className="relative mb-10 inline-block">
-          <div className="absolute -top-4 -left-4 w-full h-full bg-neutral-200 rounded-[2rem] -rotate-3" />
-          <div className="absolute -bottom-2 -right-2 w-full h-full bg-neutral-300/50 rounded-[2rem] rotate-2" />
-          <div className="relative bg-white rounded-2xl p-8 shadow-sm border border-neutral-200/80">
-            <div className="w-44 h-44 mx-auto text-neutral-800">
-              {astronautSvg ? (
-                <div dangerouslySetInnerHTML={{ __html: astronautSvg }} className="w-full h-full" />
-              ) : (
-                <div className="w-full h-full bg-neutral-100 rounded-xl flex items-center justify-center text-6xl font-black text-neutral-300">
-                  ?
-                </div>
-              )}
+      <div className="max-w-3xl mx-auto text-center">
+        <div className="mb-6">
+          {astronautSvg ? (
+            <div
+              dangerouslySetInnerHTML={{ __html: astronautSvg }}
+              className="h-72 mx-auto object-contain mb-4"
+            />
+          ) : (
+            <div className="h-72 w-72 mx-auto bg-neutral-100 rounded-2xl flex items-center justify-center mb-4">
+              <span className="text-8xl font-black text-neutral-300">?</span>
             </div>
-          </div>
+          )}
         </div>
 
-        <div className="relative inline-block mb-8">
-          <span className="text-[6rem] md:text-[8rem] font-black leading-none text-neutral-200 select-none tracking-tighter">
-            404
-          </span>
-          <span className="absolute inset-0 flex items-center justify-center text-[6rem] md:text-[8rem] font-black leading-none text-neutral-900 select-none tracking-tighter">
-            404
-          </span>
-        </div>
-
-        <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-3 leading-tight">
-          Houston, we<br />
-          <span className="text-neutral-500">have a problem</span>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl tracking-tight font-bold text-neutral-900 mb-6 text-balance">
+          Oh, the tragedy!
         </h1>
 
-        <p className="text-neutral-500 text-sm leading-relaxed mb-10 max-w-sm mx-auto">
-          The page you&apos;re looking for has drifted off into space or never existed.
-          Let&apos;s get you back on course.
+        <p className="text-lg md:text-xl text-neutral-600 text-balance mb-8">
+          The page you&apos;re looking for doesn&apos;t exist or has been moved.
+          Let&apos;s get you back on track.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-all active:scale-[0.97] shadow-sm"
+            className="cursor-pointer inline-flex items-center justify-center font-medium transition-all px-6 py-3 bg-neutral-900 text-white rounded-full hover:bg-neutral-700 active:scale-95 text-base"
           >
-            <Rocket className="w-4 h-4" />
-            Browse Library
+            Go to homepage
           </Link>
 
           <Link
             href="/favorites"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-neutral-300 text-neutral-600 font-semibold rounded-xl hover:border-neutral-400 hover:text-neutral-900 transition-all"
+            className="cursor-pointer inline-flex items-center justify-center font-medium transition-all px-6 py-3 bg-neutral-200 text-neutral-900 rounded-full hover:bg-neutral-900 hover:text-white active:scale-95 text-base"
           >
-            <ArrowLeft className="w-4 h-4" />
-            View Favorites
+            View favorites
           </Link>
+        </div>
 
-          <a
-            href="https://github.com/syntax-devv/TinyOps/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-neutral-300 text-neutral-600 font-semibold rounded-xl hover:border-neutral-400 hover:text-neutral-900 transition-all"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Open Issue
-          </a>
+        <div className="mt-10 mb-16 mx-auto">
+          <p className="text-sm text-neutral-500 mb-3">You might be looking for:</p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <a
+              href="https://github.com/syntax-devv/TinyOps"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-neutral-600 hover:text-neutral-900 transition-colors font-medium text-sm"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://github.com/syntax-devv/TinyOps/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-neutral-600 hover:text-neutral-900 transition-colors font-medium text-sm"
+            >
+              Report Issue
+            </a>
+            <Link
+              href="/favorites"
+              className="text-neutral-600 hover:text-neutral-900 transition-colors font-medium text-sm"
+            >
+              Favorites
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Bot, ChevronDown, Check } from "lucide-react";
+import { X, Send, BotMessageSquare, ChevronDown, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -62,7 +62,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
 
       toast.success("Prompt suggestion submitted!", {
         description: "Thank you! Your suggestion has been received and will be reviewed.",
-        icon: <Bot className="w-4 h-4 text-neutral-900" />
+        icon: <BotMessageSquare className="w-4 h-4 text-neutral-900" />
       });
 
       setTitle("");
@@ -107,7 +107,7 @@ export function SuggestPromptModal({ isOpen, onClose }: SuggestPromptModalProps)
                 <div className="flex items-center justify-between relative">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-xl bg-neutral-900 flex items-center justify-center">
-                      <Bot className="w-5.5 h-5.5 text-white" />
+                      <BotMessageSquare className="w-5.5 h-5.5 text-white" />
                     </div>
                     <div>
                       <h2 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
