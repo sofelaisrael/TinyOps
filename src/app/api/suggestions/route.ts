@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
-    const { title, description, category, name, email } = await req.json();
+    const { title, description, category, email } = await req.json();
 
     if (!title?.trim()) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       `Title: ${title}`,
       `Category: ${category || "None"}`,
       `Description: ${description || "None"}`,
-      `Submitted by: ${name || "Anonymous"} (${email || "no email"})`,
+      `Submitted by: ${email || "Anonymous"}`,
     ].join("\n");
 
     await sendEmail({

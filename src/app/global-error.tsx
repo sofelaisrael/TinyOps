@@ -17,6 +17,7 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body className="bg-[#EDEBE7] text-neutral-900 min-h-screen antialiased">
+        <script src="https://cdn.tailwindcss.com" />
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="max-w-3xl mx-auto text-center">
             <div className="mb-6">

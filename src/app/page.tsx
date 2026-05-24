@@ -20,6 +20,7 @@ import { Logo } from "@/components/logo";
 import { useRecentlyViewed } from "@/lib/favorites";
 import { useSearchParams, useRouter } from "next/navigation";
 import { MobileFilterButton, MobileFilterDrawer } from "@/components/mobile-filter-drawer";
+import { Footer } from "@/components/footer";
 
 const PROMPTS_PER_PAGE = 12;
 
@@ -76,7 +77,7 @@ function HomeContent() {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
 
   const goToPage = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -90,15 +91,19 @@ function HomeContent() {
   };
 
   useEffect(() => {
+    let cancelled = false;
     const loadPrompts = async () => {
       try {
         const res = await fetch("/api/prompts");
-        if (res.ok) setPrompts(await res.json());
+        if (res.ok && !cancelled) setPrompts(await res.json());
+      } catch {
+        if (!cancelled) setPrompts([]);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     };
     loadPrompts();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -529,7 +534,7 @@ function HomeContent() {
             onSubmit={async (e) => {
               e.preventDefault();
               const form = e.target as HTMLFormElement;
-              const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+              const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
               try {
                 const res = await fetch("/api/subscribe", {
                   method: "POST",
@@ -562,22 +567,7 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-neutral-200/80 py-8">
-        <div className="max-w-[1200px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-[12px] text-neutral-400">© {new Date().getFullYear()} TinyOps Labs</span>
-          <div className="flex items-center gap-5 text-[12px] text-neutral-400">
-            {[
-              { label: "Docs", href: "https://github.com/syntax-devv/TinyOps#readme" },
-              { label: "API", href: "/coming-soon?page=API" },
-              { label: "GitHub", href: "https://github.com/syntax-devv/TinyOps" },
-              { label: "Terms", href: "/coming-soon?page=Terms" },
-            ].map((item) => (
-              <Link key={item.label} href={item.href} className="hover:text-neutral-700 transition-colors">{item.label}</Link>
-            ))}
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <ShortcutsModal isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
       <SuggestPromptModal isOpen={isSuggestModalOpen} onClose={() => setIsSuggestModalOpen(false)} />

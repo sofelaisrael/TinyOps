@@ -25,8 +25,8 @@ export function EmailCapture() {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        const data = await res.json();
-        setError(data.error || "Something went wrong.");
+        try { const data = await res.json(); setError(data.error || "Something went wrong."); }
+        catch { setError("Something went wrong."); }
       }
     } catch {
       setError("Failed to connect to the server.");

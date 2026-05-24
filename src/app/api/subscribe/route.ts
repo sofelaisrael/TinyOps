@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const { email } = await req.json();
 
-    if (!email || !email.includes("@")) {
+    if (!email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
 
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: msg }, { status: 409 });
     }
 
-    await Promise.all([
+    await Promise.allSettled([
       sendEmail({
         to: process.env.ADMIN_EMAIL || "sofelaisrael3@gmail.com",
         subject: "New TinyOps Subscriber",

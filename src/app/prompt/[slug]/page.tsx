@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
 import { PromptTabShell } from '@/components/prompt-tab-shell';
+import { Footer } from '@/components/footer';
 import { Suspense } from 'react';
 
 interface PromptPageProps {
@@ -203,13 +204,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
         </Suspense>
       </div>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-neutral-200/80 py-8">
-        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
-          <span className="text-[12px] text-neutral-400">© {new Date().getFullYear()} TinyOps Labs</span>
-          <Link href="/" className="text-[12px] text-neutral-400 hover:text-neutral-700 transition-colors">← Browse all</Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

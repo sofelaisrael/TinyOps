@@ -9,6 +9,7 @@ import { PromptCard } from '@/components/prompt-card';
 import { ShortcutsModal } from '@/components/modals';
 import { useFavorites } from '@/lib/favorites';
 import { Logo } from '@/components/logo';
+import { Footer } from '@/components/footer';
 
 export default function FavoritesPage() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -133,15 +134,7 @@ export default function FavoritesPage() {
         </main>
       </div>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-neutral-200/80 py-8">
-        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
-          <span className="text-[12px] text-neutral-400">© {new Date().getFullYear()} TinyOps Labs</span>
-          <Link href="/" className="text-[12px] text-neutral-400 hover:text-neutral-700 transition-colors">
-            ← Browse all
-          </Link>
-        </div>
-      </footer>
+      <Footer />
 
       <ShortcutsModal isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
     </div>
