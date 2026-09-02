@@ -30,16 +30,17 @@ interface AuditCategory {
 interface AuditIssue {
   name: string;
   recommendation: string;
+  passed: boolean;
 }
 
 interface AuditResults {
   success: boolean;
+  repo: { owner: string; repo: string; url: string };
   score: number;
   maxScore: number;
   grade: string;
   categories: AuditCategory[];
   issues: AuditIssue[];
-  repoUrl: string;
 }
 
 // ── Category icons ──
@@ -116,7 +117,17 @@ export default function AuditPage() {
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error || "Audit failed");
-      setResults(data);
+      // Transform API response to match client expectations
+      setResults({
+        ...data.audit,
+        success: data.success,
+        repo: data.repo,
+        issues: (data.audit.recommendations || []).map((r: string) => ({
+          name: r.split(' — ')[0] || r,
+          recommendation: r.includes(' — ') ? r.split(' — ')[1] : r,
+          passed: false,
+        })),
+      });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
